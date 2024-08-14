@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="360.0" style="-fx-background-color: #1E1E1E;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="14.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../icons/Connect.png" />
+         </image></ImageView>
+      <Label layoutX="84.0" layoutY="14.0" prefHeight="32.0" prefWidth="244.0" text="App Name" textFill="WHITE">
+         <font>
+            <Font name="JetBrains Mono Bold" size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="84.0" layoutY="40.0" prefHeight="24.0" prefWidth="244.0" text="mail@gmail.com" textFill="#b5b5b5">
+         <font>
+            <Font name="JetBrains Mono Regular" size="12.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>
