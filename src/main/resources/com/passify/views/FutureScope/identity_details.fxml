@@ -51,44 +51,28 @@
 
             </image>
         </ImageView>
-        <Label contentDisplay="TEXT_ONLY" graphicTextGap="0.0" layoutX="160.0" layoutY="95.0" prefHeight="28.0" prefWidth="320.0" text="Login" textFill="#b2b2b2">
+        <Label contentDisplay="TEXT_ONLY" graphicTextGap="0.0" layoutX="160.0" layoutY="95.0" prefHeight="28.0" prefWidth="320.0" text="Age" textFill="#b2b2b2">
             <font>
                 <Font name="JetBrains Mono Regular" size="14.0" />
             </font>
         </Label>
-        <Label contentDisplay="TEXT_ONLY" graphicTextGap="0.0" layoutX="160.0" layoutY="60.0" prefHeight="39.0" prefWidth="332.0" text="Name" textFill="#b2b2b2">
+        <Label contentDisplay="TEXT_ONLY" graphicTextGap="0.0" layoutX="160.0" layoutY="60.0" prefHeight="39.0" prefWidth="332.0" text="Full Name" textFill="#b2b2b2">
             <font>
                 <Font name="JetBrains Mono Bold" size="16.0" />
             </font>
         </Label>
-        <TextField editable="false" layoutX="70.0" layoutY="180.0" prefHeight="40.0" prefWidth="460.0" promptText="Full Name" style="-fx-text-fill: #FFFFFF; -fx-background-color: #404040;">
+        <TextField editable="false" layoutX="70.0" layoutY="180.0" prefHeight="40.0" prefWidth="460.0" promptText="Phone Number" style="-fx-text-fill: #FFFFFF; -fx-background-color: #404040;">
             <font>
                 <Font name="JetBrains Mono Regular" size="16.0" />
             </font>
         </TextField>
-        <Label contentDisplay="TEXT_ONLY" graphicTextGap="0.0" layoutX="70.0" layoutY="435.0" prefHeight="28.0" prefWidth="320.0" text="website.com" textFill="#b2b2b2">
-            <font>
-                <Font name="JetBrains Mono Regular" size="14.0" />
-            </font>
-        </Label>
-        <Label contentDisplay="TEXT_ONLY" graphicTextGap="0.0" layoutX="70.0" layoutY="403.0" prefHeight="39.0" prefWidth="332.0" text="Website" textFill="#b2b2b2">
-            <font>
-                <Font name="JetBrains Mono Bold" size="16.0" />
-            </font>
-        </Label>
-        <PasswordField editable="false" layoutX="70.0" layoutY="254.0" prefHeight="40.0" prefWidth="460.0" promptText="Phone Number" style="-fx-text-fill: #FFFFFF; -fx-background-color: #404040;">
+        <PasswordField editable="false" layoutX="70.0" layoutY="254.0" prefHeight="40.0" prefWidth="460.0" promptText="Email" style="-fx-text-fill: #FFFFFF; -fx-background-color: #404040;">
             <font>
                 <Font name="JetBrains Mono Regular" size="16.0" />
             </font>
         </PasswordField>
         <Line endX="450.0" layoutX="150.0" layoutY="150.0" startX="-100.0" stroke="#404040" strokeWidth="2.0" />
-        <Line endX="450.0" layoutX="150.0" layoutY="493.0" startX="-100.0" stroke="#404040" strokeWidth="2.0" />
-        <Label contentDisplay="TEXT_ONLY" graphicTextGap="0.0" layoutX="70.0" layoutY="523.0" prefHeight="39.0" prefWidth="332.0" text="Notes" textFill="#b2b2b2">
-            <font>
-                <Font name="JetBrains Mono Bold" size="16.0" />
-            </font>
-        </Label>
-        <TextField editable="false" layoutX="70.0" layoutY="326.0" prefHeight="40.0" prefWidth="460.0" promptText="Email" style="-fx-text-fill: #FFFFFF; -fx-background-color: #404040;">
+        <TextField editable="false" layoutX="70.0" layoutY="326.0" prefHeight="40.0" prefWidth="460.0" promptText="Date of Birth" style="-fx-text-fill: #FFFFFF; -fx-background-color: #404040;">
             <font>
                 <Font name="JetBrains Mono Regular" size="16.0" />
             </font>
@@ -100,7 +84,7 @@
             <graphic>
                 <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="@../icons/Copy.png" />
+                        <Image url="@../../icons/Copy.png" />
                     </image>
                 </ImageView>
             </graphic>
@@ -112,7 +96,7 @@
             <graphic>
                 <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="@../icons/Copy.png" />
+                        <Image url="@../../icons/Copy.png" />
                     </image>
                 </ImageView>
             </graphic>
@@ -124,7 +108,7 @@
             <graphic>
                 <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="@../icons/Copy.png" />
+                        <Image url="@../../icons/Copy.png" />
                     </image>
                 </ImageView>
             </graphic>
@@ -136,7 +120,7 @@
             <graphic>
                 <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="@../icons/Close.png" />
+                        <Image url="@../../icons/Close.png" />
                     </image>
                 </ImageView>
             </graphic>
@@ -148,16 +132,45 @@
             <graphic>
                 <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="@../icons/Edit.png" />
+                        <Image url="@../../icons/Edit.png" />
                     </image>
                 </ImageView>
             </graphic>
         </Button>
-        <TextField alignment="TOP_LEFT" editable="false" layoutX="70.0" layoutY="562.0" prefHeight="118.0" prefWidth="460.0" promptText="Some Notes" style="-fx-text-fill: #FFFFFF; -fx-background-color: #404040;">
-            <font>
-                <Font name="JetBrains Mono Regular" size="16.0" />
-            </font>
-        </TextField>
+      <TextField editable="false" layoutX="70.0" layoutY="395.0" prefHeight="40.0" prefWidth="460.0" promptText="Address" style="-fx-text-fill: #FFFFFF; -fx-background-color: #404040;">
+         <font>
+            <Font name="JetBrains Mono Regular" size="16.0" />
+         </font>
+      </TextField>
+      <Button layoutX="541.0" layoutY="395.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: #404040;" textFill="WHITE">
+         <font>
+            <Font name="JetBrains Mono Italic" size="16.0" />
+         </font>
+         <graphic>
+            <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../icons/Copy.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+      <TextField editable="false" layoutX="70.0" layoutY="460.0" prefHeight="40.0" prefWidth="460.0" promptText="AADHAR CARD" style="-fx-text-fill: #FFFFFF; -fx-background-color: #404040;">
+         <font>
+            <Font name="JetBrains Mono Regular" size="16.0" />
+         </font>
+      </TextField>
+      <Button layoutX="541.0" layoutY="460.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: #404040;" textFill="WHITE">
+         <font>
+            <Font name="JetBrains Mono Italic" size="16.0" />
+         </font>
+         <graphic>
+            <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../icons/Copy.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
     </children>
     <effect>
         <Blend />

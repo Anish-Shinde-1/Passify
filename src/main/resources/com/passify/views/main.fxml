@@ -50,7 +50,18 @@
          <left>
             <VBox maxHeight="720.0" maxWidth="280.0" minHeight="720.0" minWidth="280.0" prefHeight="720.0" prefWidth="280.0" style="-fx-background-color: #282828;" BorderPane.alignment="CENTER">
                <children>
-                  <Button alignment="BOTTOM_LEFT" defaultButton="true" graphicTextGap="20.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="320.0" style="-fx-background-color: #282828;" text="All Items" textFill="WHITE">
+                  <Button fx:id="accountButton" alignment="BOTTOM_LEFT" defaultButton="true" graphicTextGap="20.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="320.0" style="-fx-background-color: #282828;" text="Account" textFill="WHITE">
+                     <font>
+                        <Font name="JetBrains Mono Regular" size="16.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../icons/User.png" />
+                           </image></ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="all_itemsButton" alignment="BOTTOM_LEFT" defaultButton="true" graphicTextGap="20.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="320.0" style="-fx-background-color: #282828;" text="All Items" textFill="WHITE">
                      <font>
                         <Font name="JetBrains Mono Regular" size="16.0" />
                      </font>
@@ -61,7 +72,7 @@
                            </image></ImageView>
                      </graphic>
                   </Button>
-                  <Button alignment="BOTTOM_LEFT" defaultButton="true" graphicTextGap="20.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="320.0" style="-fx-background-color: #282828;" text="Favourites" textFill="WHITE">
+                  <Button fx:id="favouritesButton" alignment="BOTTOM_LEFT" defaultButton="true" graphicTextGap="20.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="320.0" style="-fx-background-color: #282828;" text="Favourites" textFill="WHITE">
                      <font>
                         <Font name="JetBrains Mono Regular" size="16.0" />
                      </font>
@@ -72,7 +83,7 @@
                            </image></ImageView>
                      </graphic>
                   </Button>
-                  <Button alignment="BOTTOM_LEFT" defaultButton="true" graphicTextGap="20.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="320.0" style="-fx-background-color: #282828;" text="Trash" textFill="WHITE">
+                  <Button fx:id="trashButton" alignment="BOTTOM_LEFT" defaultButton="true" graphicTextGap="20.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="320.0" style="-fx-background-color: #282828;" text="Trash" textFill="WHITE">
                      <font>
                         <Font name="JetBrains Mono Regular" size="16.0" />
                      </font>
@@ -88,36 +99,37 @@
                         <Font name="JetBrains Mono Regular" size="16.0" />
                      </font>
                   </Label>
-                  <Button alignment="BOTTOM_LEFT" defaultButton="true" graphicTextGap="20.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="320.0" style="-fx-background-color: #282828;" text="Login" textFill="WHITE">
+                  <Button fx:id="loginTypeButton" alignment="BOTTOM_LEFT" defaultButton="true" graphicTextGap="20.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="320.0" style="-fx-background-color: #282828;" text="Login" textFill="WHITE">
                      <font>
                         <Font name="JetBrains Mono Regular" size="16.0" />
                      </font>
                      <graphic>
-                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../icons/Key.png" />
+                           </image></ImageView>
                      </graphic>
                   </Button>
-                  <Button alignment="BOTTOM_LEFT" defaultButton="true" graphicTextGap="20.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="320.0" style="-fx-background-color: #282828;" text="Card" textFill="WHITE">
+                  <Button fx:id="cardTypeButton" alignment="BOTTOM_LEFT" defaultButton="true" graphicTextGap="20.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="320.0" style="-fx-background-color: #282828;" text="Card" textFill="WHITE">
                      <font>
                         <Font name="JetBrains Mono Regular" size="16.0" />
                      </font>
                      <graphic>
-                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../icons/Card.png" />
+                           </image></ImageView>
                      </graphic>
                   </Button>
-                  <Button alignment="BOTTOM_LEFT" defaultButton="true" graphicTextGap="20.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="320.0" style="-fx-background-color: #282828;" text="Identity" textFill="WHITE">
+                  <Button fx:id="identityTypeButton" alignment="BOTTOM_LEFT" defaultButton="true" graphicTextGap="20.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="320.0" style="-fx-background-color: #282828;" text="Identity" textFill="WHITE">
                      <font>
                         <Font name="JetBrains Mono Regular" size="16.0" />
                      </font>
                      <graphic>
-                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" />
-                     </graphic>
-                  </Button>
-                  <Button alignment="BOTTOM_LEFT" defaultButton="true" graphicTextGap="20.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="320.0" style="-fx-background-color: #282828;" text="Account" textFill="WHITE">
-                     <font>
-                        <Font name="JetBrains Mono Regular" size="16.0" />
-                     </font>
-                     <graphic>
-                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../icons/Identity.png" />
+                           </image></ImageView>
                      </graphic>
                   </Button>
                   <Label alignment="BOTTOM_LEFT" contentDisplay="TEXT_ONLY" graphicTextGap="0.0" prefHeight="50.0" prefWidth="320.0" text=" FOLDERS" textFill="#b2b2b2">
@@ -125,7 +137,7 @@
                         <Font name="JetBrains Mono Regular" size="16.0" />
                      </font>
                   </Label>
-                  <Button alignment="BOTTOM_LEFT" defaultButton="true" graphicTextGap="20.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="320.0" style="-fx-background-color: #282828;" text="Work" textFill="WHITE">
+                  <Button fx:id="workFolderButton" alignment="BOTTOM_LEFT" defaultButton="true" graphicTextGap="20.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="320.0" style="-fx-background-color: #282828;" text="Work" textFill="WHITE">
                      <font>
                         <Font name="JetBrains Mono Regular" size="16.0" />
                      </font>
@@ -136,7 +148,7 @@
                            </image></ImageView>
                      </graphic>
                   </Button>
-                  <Button alignment="BOTTOM_LEFT" defaultButton="true" graphicTextGap="20.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="320.0" style="-fx-background-color: #282828;" text="Social" textFill="WHITE">
+                  <Button fx:id="socialFolderButton" alignment="BOTTOM_LEFT" defaultButton="true" graphicTextGap="20.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="320.0" style="-fx-background-color: #282828;" text="Social" textFill="WHITE">
                      <font>
                         <Font name="JetBrains Mono Regular" size="16.0" />
                      </font>
@@ -147,7 +159,7 @@
                            </image></ImageView>
                      </graphic>
                   </Button>
-                  <Button alignment="BOTTOM_LEFT" defaultButton="true" graphicTextGap="20.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="320.0" style="-fx-background-color: #282828;" text="Misc" textFill="WHITE">
+                  <Button fx:id="miscFolderButton" alignment="BOTTOM_LEFT" defaultButton="true" graphicTextGap="20.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="320.0" style="-fx-background-color: #282828;" text="Misc" textFill="WHITE">
                      <font>
                         <Font name="JetBrains Mono Regular" size="16.0" />
                      </font>
@@ -156,6 +168,23 @@
                            <image>
                               <Image url="@../icons/Folder.png" />
                            </image></ImageView>
+                     </graphic>
+                  </Button>
+                  <Label alignment="BOTTOM_LEFT" contentDisplay="TEXT_ONLY" graphicTextGap="0.0" layoutX="10.0" layoutY="410.0" prefHeight="50.0" prefWidth="320.0" textFill="#b2b2b2">
+                     <font>
+                        <Font name="JetBrains Mono Regular" size="16.0" />
+                     </font>
+                  </Label>
+                  <Button fx:id="signoutButton" alignment="BOTTOM_LEFT" defaultButton="true" graphicTextGap="20.0" layoutX="10.0" layoutY="560.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="320.0" style="-fx-background-color: #282828;" text="Signout" textFill="WHITE">
+                     <font>
+                        <Font name="JetBrains Mono Regular" size="16.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../icons/login.png" />
+                           </image>
+                        </ImageView>
                      </graphic>
                   </Button>
                </children>
@@ -166,9 +195,9 @@
                <top>
                   <Pane prefHeight="60.0" prefWidth="360.0" style="-fx-background-color: #1E1E1E;" BorderPane.alignment="CENTER">
                      <children>
-                        <Button layoutX="304.0" layoutY="14.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="40.0" style="-fx-background-color: #3b3b3b;" textFill="WHITE">
+                        <Button fx:id="addNewPasswordButton" layoutX="278.0" layoutY="14.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="68.0" style="-fx-background-color: #3b3b3b;" text="New" textFill="WHITE">
                            <font>
-                              <Font name="JetBrains Mono Italic" size="16.0" />
+                              <Font name="JetBrains Mono Regular" size="16.0" />
                            </font>
                            <graphic>
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
@@ -178,7 +207,7 @@
                               </ImageView>
                            </graphic>
                         </Button>
-                        <TextField layoutX="14.0" layoutY="14.0" prefHeight="32.0" prefWidth="280.0" promptText="Search Vault" style="-fx-text-fill: #FFFFFF; -fx-background-color: #404040;">
+                        <TextField fx:id="searchBar" layoutX="14.0" layoutY="14.0" prefHeight="32.0" prefWidth="256.0" promptText="Search Vault" style="-fx-text-fill: #FFFFFF; -fx-background-color: #404040;">
                            <font>
                               <Font name="JetBrains Mono Italic" size="16.0" />
                            </font>
@@ -190,12 +219,12 @@
                   </Pane>
                </top>
                <center>
-                  <VBox maxHeight="660.0" maxWidth="360.0" minHeight="660.0" minWidth="360.0" prefHeight="660.0" prefWidth="360.0" style="-fx-background-color: #1E1E1E;" BorderPane.alignment="CENTER" />
+                  <VBox fx:id="appListHolder" maxHeight="660.0" maxWidth="360.0" minHeight="660.0" minWidth="360.0" prefHeight="660.0" prefWidth="360.0" style="-fx-background-color: #1E1E1E;" BorderPane.alignment="CENTER" />
                </center>
             </BorderPane>
          </center>
          <right>
-            <VBox prefHeight="720.0" prefWidth="640.0" style="-fx-background-color: #1E1E1E; -fx-border-color: #111111;" BorderPane.alignment="CENTER" />
+            <VBox fx:id="pageHolder" prefHeight="720.0" prefWidth="640.0" style="-fx-background-color: #1E1E1E; -fx-border-color: #111111;" BorderPane.alignment="CENTER" />
          </right>
       </BorderPane>
    </children>

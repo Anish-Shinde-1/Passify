@@ -1,66 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.Pane?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="your.package.ControllerClass"
-            prefHeight="720.0" prefWidth="640.0" style="-fx-background-color: #1E1E1E;">
-    <children>
-        <VBox alignment="CENTER" layoutX="120.0" layoutY="50.0" spacing="20.0" style="-fx-background-color: #2b2b2b; -fx-padding: 20px; -fx-border-radius: 10px; -fx-background-radius: 10px;" prefWidth="400.0" prefHeight="600.0">
-            <children>
-                <Label text="Welcome Back!" textFill="#b2b2b2">
-                    <font>
-                        <Font name="JetBrains Mono Bold" size="24.0" />
-                    </font>
-                </Label>
 
-                <TextField fx:id="usernameField" promptText="Username" style="-fx-text-fill: #FFFFFF; -fx-background-color: #404040; -fx-prompt-text-fill: #b2b2b2;">
-                    <font>
-                        <Font name="JetBrains Mono Regular" size="16.0" />
-                    </font>
-                </TextField>
-
-                <PasswordField fx:id="passwordField" promptText="Password" style="-fx-text-fill: #FFFFFF; -fx-background-color: #404040; -fx-prompt-text-fill: #b2b2b2;">
-                    <font>
-                        <Font name="JetBrains Mono Regular" size="16.0" />
-                    </font>
-                </PasswordField>
-
-                <TextField fx:id="emailField" promptText="Email" style="-fx-text-fill: #FFFFFF; -fx-background-color: #404040; -fx-prompt-text-fill: #b2b2b2;">
-                    <font>
-                        <Font name="JetBrains Mono Regular" size="16.0" />
-                    </font>
-                </TextField>
-
-                <Button fx:id="loginButton" text="Log In" style="-fx-background-color: #404040; -fx-text-fill: #FFFFFF; -fx-background-radius: 20px; -fx-padding: 10px;">
-                    <font>
-                        <Font name="JetBrains Mono Bold" size="16.0" />
-                    </font>
-                </Button>
-
-                <Button fx:id="forgotPasswordButton" text="Forgot Password?" style="-fx-background-color: transparent; -fx-text-fill: #b2b2b2;">
-                    <font>
-                        <Font name="JetBrains Mono Italic" size="14.0" />
-                    </font>
-                </Button>
-            </children>
-        </VBox>
-
-        <Button fx:id="closeButton" layoutX="590.0" layoutY="20.0" mnemonicParsing="false" style="-fx-background-color: #3b3b3b;" textFill="WHITE">
-            <font>
-                <Font name="JetBrains Mono Italic" size="16.0" />
-            </font>
-        </Button>
-
-        <Button fx:id="editButton" layoutX="550.0" layoutY="20.0" mnemonicParsing="false" style="-fx-background-color: #3b3b3b;" textFill="WHITE">
-            <font>
-                <Font name="JetBrains Mono Italic" size="16.0" />
-            </font>
-        </Button>
-    </children>
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #1E1E1E;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/22">
+   <children>
+      <Pane layoutX="680.0" layoutY="40.0" prefHeight="640.0" prefWidth="560.0" style="-fx-background-color: #282828; -fx-background-radius: 10;" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="680.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="40.0">
+         <children>
+            <TextField layoutX="30.0" layoutY="330.0" prefHeight="40.0" prefWidth="500.0" style="-fx-background-color: #404040; -fx-background-radius: 10;" />
+            <TextField layoutX="30.0" layoutY="270.0" prefHeight="40.0" prefWidth="500.0" style="-fx-background-color: #404040; -fx-background-radius: 10;" />
+            <TextField layoutX="30.0" layoutY="207.0" prefHeight="40.0" prefWidth="500.0" style="-fx-background-color: #404040; -fx-background-radius: 10;" />
+         </children>
+      </Pane>
+   </children>
 </AnchorPane>

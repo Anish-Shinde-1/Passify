@@ -90,7 +90,7 @@
             <graphic>
                 <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="@../icons/Copy.png" />
+                        <Image url="@../../icons/Copy.png" />
                     </image>
                 </ImageView>
             </graphic>
@@ -102,7 +102,7 @@
             <graphic>
                 <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="@../icons/Copy.png" />
+                        <Image url="@../../icons/Copy.png" />
                     </image>
                 </ImageView>
             </graphic>
@@ -114,7 +114,7 @@
             <graphic>
                 <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="@../icons/Copy.png" />
+                        <Image url="@../../icons/Copy.png" />
                     </image>
                 </ImageView>
             </graphic>
@@ -126,7 +126,7 @@
             <graphic>
                 <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="@../icons/Close.png" />
+                        <Image url="@../../icons/Close.png" />
                     </image>
                 </ImageView>
             </graphic>
@@ -138,7 +138,7 @@
             <graphic>
                 <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="@../icons/Edit.png" />
+                        <Image url="@../../icons/Edit.png" />
                     </image>
                 </ImageView>
             </graphic>
@@ -160,12 +160,12 @@
          <graphic>
             <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../icons/Copy.png" />
+                  <Image url="@../../icons/Copy.png" />
                </image>
             </ImageView>
          </graphic>
       </Button>
-      <PasswordField editable="false" layoutX="70.0" layoutY="460.0" prefHeight="40.0" prefWidth="460.0" promptText="CVV" style="-fx-text-fill: #FFFFFF; -fx-background-color: #404040;">
+      <PasswordField editable="false" layoutX="70.0" layoutY="460.0" prefHeight="40.0" prefWidth="460.0" promptText="PIN" style="-fx-text-fill: #FFFFFF; -fx-background-color: #404040;">
          <font>
             <Font name="JetBrains Mono Regular" size="16.0" />
          </font>
@@ -177,7 +177,7 @@
          <graphic>
             <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../icons/Copy.png" />
+                  <Image url="@../../icons/Copy.png" />
                </image>
             </ImageView>
          </graphic>
