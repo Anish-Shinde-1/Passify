@@ -44,7 +44,7 @@
                 </Button>
 
                 <!-- Close Button (for form dismissal) -->
-                <Button layoutX="490.0" layoutY="30.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" style="-fx-background-color: #3b3b3b;" textFill="WHITE">
+                <Button layoutX="504.0" layoutY="14.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" style="-fx-background-color: #3b3b3b;" textFill="WHITE">
                     <font>
                         <Font name="JetBrains Mono Italic" size="16.0" />
                     </font>

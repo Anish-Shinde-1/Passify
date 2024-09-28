@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="appCard" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="360.0" style="-fx-background-color: #1E1E1E;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root fx:id="appCard" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="360.0" style="-fx-background-color: #1E1E1E;" type="AnchorPane" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com/passify/controller/AppCardController.java">
    <children>
       <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="14.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -23,4 +23,4 @@
          </font>
       </Label>
    </children>
-</AnchorPane>
+</fx:root>

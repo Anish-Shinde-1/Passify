@@ -8,6 +8,8 @@ module com.passify.passify {
     requires net.synedra.validatorfx;
     requires org.kordamp.ikonli.javafx;
     requires eu.hansolo.tilesfx;
+    requires java.desktop;
+    requires java.sql;
 
     opens com.passify to javafx.fxml;
     exports com.passify;

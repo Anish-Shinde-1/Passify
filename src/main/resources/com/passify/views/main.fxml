@@ -44,11 +44,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com/passify/controller/MainController.java">
    <children>
-      <BorderPane prefHeight="720.0" prefWidth="1280.0">
+      <BorderPane fx:id="mainBorderPane" prefHeight="720.0" prefWidth="1280.0">
          <left>
-            <VBox maxHeight="720.0" maxWidth="280.0" minHeight="720.0" minWidth="280.0" prefHeight="720.0" prefWidth="280.0" style="-fx-background-color: #282828;" BorderPane.alignment="CENTER">
+            <VBox fx:id="navigationPanel" maxHeight="720.0" maxWidth="280.0" minHeight="720.0" minWidth="280.0" prefHeight="720.0" prefWidth="280.0" style="-fx-background-color: #282828;" BorderPane.alignment="CENTER">
                <children>
                   <Button fx:id="accountButton" alignment="BOTTOM_LEFT" defaultButton="true" graphicTextGap="20.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="320.0" style="-fx-background-color: #282828;" text="Account" textFill="WHITE">
                      <font>
@@ -137,7 +137,7 @@
                         <Font name="JetBrains Mono Regular" size="16.0" />
                      </font>
                   </Label>
-                  <Button fx:id="workFolderButton" alignment="BOTTOM_LEFT" defaultButton="true" graphicTextGap="20.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="320.0" style="-fx-background-color: #282828;" text="Work" textFill="WHITE">
+                  <Button fx:id="workCategoryButton" alignment="BOTTOM_LEFT" defaultButton="true" graphicTextGap="20.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="320.0" style="-fx-background-color: #282828;" text="Work" textFill="WHITE">
                      <font>
                         <Font name="JetBrains Mono Regular" size="16.0" />
                      </font>
@@ -148,7 +148,7 @@
                            </image></ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="socialFolderButton" alignment="BOTTOM_LEFT" defaultButton="true" graphicTextGap="20.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="320.0" style="-fx-background-color: #282828;" text="Social" textFill="WHITE">
+                  <Button fx:id="socialCategoryButton" alignment="BOTTOM_LEFT" defaultButton="true" graphicTextGap="20.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="320.0" style="-fx-background-color: #282828;" text="Social" textFill="WHITE">
                      <font>
                         <Font name="JetBrains Mono Regular" size="16.0" />
                      </font>
@@ -159,7 +159,7 @@
                            </image></ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="miscFolderButton" alignment="BOTTOM_LEFT" defaultButton="true" graphicTextGap="20.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="320.0" style="-fx-background-color: #282828;" text="Misc" textFill="WHITE">
+                  <Button fx:id="miscCategoryButton" alignment="BOTTOM_LEFT" defaultButton="true" graphicTextGap="20.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="320.0" style="-fx-background-color: #282828;" text="Misc" textFill="WHITE">
                      <font>
                         <Font name="JetBrains Mono Regular" size="16.0" />
                      </font>
