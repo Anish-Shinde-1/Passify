@@ -1,60 +1,37 @@
 package com.passify.model;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 public class PasswordModel {
-    private int passwordId; // password_id
-    private int userId; // user_id
-    private String encryptedPassword; // encrypted_password
-    private String encryptionSalt; // encryption_salt
-    private int categoryId; // category_id
-    private String appName; // app_name
-    private String appUsername; // app_username
+    private String passwordId;
+    private String userId;
+    private String encryptedPassword;
+    private String encryptionSalt;
+    private String categoryId;
+    private String appName;
+    private String appUsername;
     private String appUrl;
-    private String appEmail; // app_url
-    private String appNotes; // app_notes
-    private String passwordState; // password_state
-    private boolean isFavourite; // isFavourite
-    private LocalDateTime createdAt; // created_at
+    private String appEmail;
+    private String appNotes;
+    private String passwordState;
+    private boolean isFavourite;
+    private Timestamp createdAt;
+    private Timestamp updatedAt;
 
-
-    // Constructor
-    public PasswordModel(int passwordId, int userId, String encryptedPassword, String encryptionSalt,
-                         int categoryId, String appName, String appUsername,
-                         String appUrl, String appNotes, String passwordState,
-                         LocalDateTime createdAt, boolean isFavourite) {
-        this.passwordId = passwordId;
-        this.userId = userId;
-        this.encryptedPassword = encryptedPassword;
-        this.encryptionSalt = encryptionSalt;
-        this.categoryId = categoryId;
-        this.appName = appName;
-        this.appUsername = appUsername;
-        this.appUrl = appUrl;
-        this.appNotes = appNotes;
-        this.passwordState = passwordState;
-        this.createdAt = createdAt;
-        this.isFavourite = isFavourite; // Set the isFavourite value
-    }
-
-    // Default constructor
-    public PasswordModel() {
-    }
-
-    // Getters and Setters
-    public int getPasswordId() {
+    // Getters and Setters for each field
+    public String getPasswordId() {
         return passwordId;
     }
 
-    public void setPasswordId(int passwordId) {
+    public void setPasswordId(String passwordId) {
         this.passwordId = passwordId;
     }
 
-    public int getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
@@ -74,11 +51,11 @@ public class PasswordModel {
         this.encryptionSalt = encryptionSalt;
     }
 
-    public int getCategoryId() {
+    public String getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(int categoryId) {
+    public void setCategoryId(String categoryId) {
         this.categoryId = categoryId;
     }
 
@@ -106,14 +83,6 @@ public class PasswordModel {
         this.appUrl = appUrl;
     }
 
-    public String getAppEmail () {
-        return appEmail;
-    }
-
-    public void setAppEmail(String appEmail) {
-        this.appEmail = appEmail;
-    }
-
     public String getAppNotes() {
         return appNotes;
     }
@@ -130,38 +99,35 @@ public class PasswordModel {
         this.passwordState = passwordState;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
     public boolean isFavourite() {
         return isFavourite;
     }
 
-    public void setFavourite(boolean favourite) {
-        isFavourite = favourite;
+    public void setFavourite(boolean isFavourite) {
+        this.isFavourite = isFavourite;
     }
 
-    @Override
-    public String toString() {
-        return "PasswordModel{" +
-                "passwordId=" + passwordId +
-                ", userId=" + userId +
-                ", encryptedPassword='" + encryptedPassword + '\'' +
-                ", encryptionSalt='" + encryptionSalt + '\'' +
-                ", categoryId=" + categoryId +
-                ", appName='" + appName + '\'' +
-                ", appUsername='" + appUsername + '\'' +
-                ", appUrl='" + appUrl + '\'' +
-                ", appEmail='" + appEmail + '\'' +
-                ", appNotes='" + appNotes + '\'' +
-                ", passwordState='" + passwordState + '\'' +
-                ", createdAt=" + createdAt +
-                ", isFavourite=" + isFavourite + // Include isFavourite in toString
-                '}';
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Timestamp getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Timestamp updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public String getAppEmail() {
+        return appEmail;
+    }
+
+    public void setAppEmail(String appEmail) {
+        this.appEmail = appEmail;
     }
 }

@@ -1,20 +1,40 @@
 package com.passify.model;
 
+import com.passify.utils.Hashing;
+import com.passify.utils.SaltGenerator;
+
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.*;
-import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 public class UserDAO {
 
     private final Connection connection;
+    private final EncryptionKeyDAO encryptionKeyDAO; // Dependency on EncryptionKeyDAO for encryption handling
 
-    public UserDAO(Connection connection) {
+    public UserDAO(Connection connection) throws SQLException {
         this.connection = connection;
+        this.encryptionKeyDAO = new EncryptionKeyDAO(connection); // Initialize EncryptionKeyDAO
     }
 
-    public UserModel createUser(String userName, String hashedPassword, String hashSalt, String userEmail) {
-        String insertSQL = "INSERT INTO User (user_id, user_name, hashed_password, hash_salt, user_email) VALUES (?, ?, ?, ?, ?)";
-        try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
+    // Create a new user
+    public UserModel createUser(String userName, String password, String userEmail) {
+        // Generate salt and hash the password
+        byte[] salt = SaltGenerator.generateSalt();
+        String hashSalt = SaltGenerator.getBase64EncodedSalt(salt);
+        String hashedPassword;
+        try {
+            hashedPassword = Hashing.generateHash512(password, hashSalt);
+        } catch (Exception e) {
+            System.err.println("Error hashing password: " + e.getMessage());
+            return null; // Return null on failure
+        }
+
+        // Step 1: Insert the new user into the User table
+        String insertUserSQL = "INSERT INTO User (user_id, user_name, hashed_password, hash_salt, user_email) VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement pstmt = connection.prepareStatement(insertUserSQL)) {
             String userId = UUID.randomUUID().toString();
             pstmt.setString(1, userId);
             pstmt.setString(2, userName);
@@ -22,41 +42,61 @@ public class UserDAO {
             pstmt.setString(4, hashSalt);
             pstmt.setString(5, userEmail);
             pstmt.executeUpdate();
-            return new UserModel(userId, userName, hashedPassword, hashSalt, userEmail, LocalDateTime.now(), null);
+
+            // Step 2: Store the DEK in the EncryptionKey table (via EncryptionKeyDAO)
+            boolean isDEKStored = encryptionKeyDAO.storeEncryptedDEK(userId);
+            if (!isDEKStored) {
+                throw new SQLException("Failed to store the DEK");
+            }
+
+            return new UserModel(userId, userName, hashedPassword, hashSalt, userEmail, new Timestamp(System.currentTimeMillis()), null);
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error creating user: " + e.getMessage());
             return null; // Return null on failure
         }
     }
 
-    public UserModel getUserById(String userId) {
+    // Verify user password
+    public boolean verifyUserPassword(String userId, String enteredPassword) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        Optional<UserModel> user = getUserById(userId);
+        if (user.isPresent()) {
+            UserModel userModel = user.get();
+            return Hashing.verifyHash(enteredPassword, userModel.getHashedPassword(), userModel.getHashSalt());
+        }
+        return false; // User not found
+    }
+
+    // Retrieve a user by ID (returns Optional)
+    public Optional<UserModel> getUserById(String userId) {
         String selectSQL = "SELECT * FROM User WHERE user_id = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(selectSQL)) {
             pstmt.setString(1, userId);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
-                return mapResultToUserModel(rs);
+                return Optional.of(mapResultToUserModel(rs));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error retrieving user by ID: " + e.getMessage());
         }
-        return null; // Return null if user not found
+        return Optional.empty(); // Return empty Optional if user not found
     }
 
-    public UserModel getUserByEmail(String userEmail) {
+    // Retrieve a user by email (returns Optional)
+    public Optional<UserModel> getUserByEmail(String userEmail) {
         String selectSQL = "SELECT * FROM User WHERE user_email = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(selectSQL)) {
             pstmt.setString(1, userEmail);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
-                return mapResultToUserModel(rs);
+                return Optional.of(mapResultToUserModel(rs));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error retrieving user by email: " + e.getMessage());
         }
-        return null; // Return null if user not found
+        return Optional.empty(); // Return empty Optional if user not found
     }
 
+    // Update a user entry
     public boolean updateUser(String userId, String userName, String hashedPassword, String hashSalt, String userEmail) {
         String updateSQL = "UPDATE User SET user_name = ?, hashed_password = ?, hash_salt = ?, user_email = ?, updated_at = CURRENT_TIMESTAMP WHERE user_id = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(updateSQL)) {
@@ -68,11 +108,12 @@ public class UserDAO {
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0; // Return true if update was successful
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error updating user: " + e.getMessage());
             return false; // Return false on failure
         }
     }
 
+    // Delete a user entry
     public boolean deleteUser(String userId) {
         String deleteSQL = "DELETE FROM User WHERE user_id = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(deleteSQL)) {
@@ -80,58 +121,20 @@ public class UserDAO {
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0; // Return true if deletion was successful
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error deleting user: " + e.getMessage());
             return false; // Return false on failure
         }
     }
 
+    // Helper function to map a result set row to a UserModel object
     private UserModel mapResultToUserModel(ResultSet rs) throws SQLException {
         String userId = rs.getString("user_id");
         String userName = rs.getString("user_name");
         String hashedPassword = rs.getString("hashed_password");
         String hashSalt = rs.getString("hash_salt");
         String userEmail = rs.getString("user_email");
-        LocalDateTime createdAt = rs.getTimestamp("created_at").toLocalDateTime();
-        LocalDateTime updatedAt = rs.getTimestamp("updated_at").toLocalDateTime();
+        Timestamp createdAt = rs.getTimestamp("created_at");
+        Timestamp updatedAt = rs.getTimestamp("updated_at"); // Get updated_at directly as Timestamp
         return new UserModel(userId, userName, hashedPassword, hashSalt, userEmail, createdAt, updatedAt);
     }
-
-//    private static final String DB_URL = "jdbc:mysql://localhost:3306/demopasswordmanager"; // Replace with your DB URL
-//    private static final String DB_USER = "root"; // Replace with your DB username
-//    private static final String DB_PASSWORD = "anish2004"; // Replace with your DB password
-//
-//    public static void main(String[] args) {
-//        // Database connection
-//        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-//            UserDAO userDAO = new UserDAO(connection);
-//
-//            // Create a new user
-//            UserModel newUser = userDAO.createUser("JohnDoe", "hashedPassword123", "salt123", "john.doe@example.com");
-//            System.out.println("User Created: " + newUser);
-//            Thread.sleep(30000);
-//
-//            // Retrieve the user
-//            UserModel retrievedUser = userDAO.getUserById(newUser.getUserId());
-//            System.out.println("User Retrieved: " + retrievedUser);
-//            Thread.sleep(30000);
-//
-//            // Update the user
-//            boolean updateSuccess = userDAO.updateUser(retrievedUser.getUserId(), "JaneDoe", "newHashedPassword456", "newSalt456", "jane.doe@example.com");
-//            if (updateSuccess) {
-//                UserModel updatedUser = userDAO.getUserById(retrievedUser.getUserId());
-//                System.out.println("User Updated: " + updatedUser);
-//            } else {
-//                System.out.println("Failed to update user.");
-//            }
-//
-//            // Delete the user
-//            boolean deleteSuccess = userDAO.deleteUser(retrievedUser.getUserId());
-//            System.out.println("User Deleted: " + deleteSuccess);
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        } catch (InterruptedException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
 }

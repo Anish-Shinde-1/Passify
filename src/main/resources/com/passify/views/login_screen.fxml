@@ -1,62 +1,102 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #1E1E1E;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #1E1E1E;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.passify.controller.LoginController">
     <children>
         <!-- Outer Pane with Rounded Corners -->
-        <Pane layoutX="669.0" layoutY="40.0" prefHeight="640.0" prefWidth="560.0" style="-fx-background-color: #282828; -fx-background-radius: 10;" AnchorPane.leftAnchor="669.0" AnchorPane.rightAnchor="51.0" AnchorPane.topAnchor="40.0">
+        <Pane layoutX="669.0" layoutY="40.0" prefHeight="640.0" prefWidth="560.0" style="-fx-background-color: #282828; -fx-background-radius: 10;" AnchorPane.leftAnchor="670.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="40.0">
             <children>
 
                 <!-- Username Field -->
-                <TextField layoutX="30.0" layoutY="250.0" prefHeight="40.0" prefWidth="500.0" promptText="Username" style="-fx-text-fill: #FFFFFF; -fx-background-color: #404040; -fx-background-radius: 10;">
+                <TextField fx:id="userName" layoutX="30.0" layoutY="160.0" prefHeight="40.0" prefWidth="500.0" promptText="Username" style="-fx-text-fill: #FFFFFF; -fx-background-color: #404040; -fx-background-radius: 10;">
                     <font>
                         <Font name="JetBrains Mono Regular" size="16.0" />
                     </font>
                 </TextField>
 
                 <!-- Password Field -->
-                <PasswordField layoutX="30.0" layoutY="310.0" prefHeight="40.0" prefWidth="500.0" promptText="Password" style="-fx-text-fill: #FFFFFF; -fx-background-color: #404040; -fx-background-radius: 10;">
+                <PasswordField fx:id="reEnteredMasterPassword" layoutX="30.0" layoutY="310.0" prefHeight="40.0" prefWidth="500.0" promptText="Re-Enter Password" style="-fx-text-fill: #FFFFFF; -fx-background-color: #404040; -fx-background-radius: 10;">
                     <font>
                         <Font name="JetBrains Mono Regular" size="16.0" />
                     </font>
                 </PasswordField>
 
                 <!-- Email Field -->
-                <TextField layoutX="30.0" layoutY="370.0" prefHeight="40.0" prefWidth="500.0" promptText="Email" style="-fx-text-fill: #FFFFFF; -fx-background-color: #404040; -fx-background-radius: 10;">
+                <TextField fx:id="userEmail" layoutX="30.0" layoutY="380.0" prefHeight="40.0" prefWidth="500.0" promptText="Email" style="-fx-text-fill: #FFFFFF; -fx-background-color: #404040; -fx-background-radius: 10;">
                     <font>
                         <Font name="JetBrains Mono Regular" size="16.0" />
                     </font>
                 </TextField>
 
                 <!-- Login Button -->
-                <Button layoutX="200.0" layoutY="440.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0" style="-fx-background-color: #404040; -fx-background-radius: 10;" text="Login" textFill="WHITE">
+                <Button fx:id="loginButton" layoutX="100.0" layoutY="450.0" mnemonicParsing="false" onAction="#handleLogin" prefHeight="40.0" prefWidth="160.0" style="-fx-background-color: #404040; -fx-background-radius: 10;" text="Login" textFill="WHITE">
                     <font>
                         <Font name="JetBrains Mono Regular" size="16.0" />
                     </font>
                 </Button>
-
-                <!-- Close Button (for form dismissal) -->
-                <Button layoutX="504.0" layoutY="14.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" style="-fx-background-color: #3b3b3b;" textFill="WHITE">
-                    <font>
-                        <Font name="JetBrains Mono Italic" size="16.0" />
-                    </font>
-                    <graphic>
-                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@../icons/Close.png" />
-                            </image>
-                        </ImageView>
-                    </graphic>
-                </Button>
+            <PasswordField fx:id="masterPassword" layoutX="30.0" layoutY="240.0" prefHeight="40.0" prefWidth="500.0" promptText="Password" style="-fx-text-fill: #FFFFFF; -fx-background-color: #404040; -fx-background-radius: 10;">
+               <font>
+                  <Font name="JetBrains Mono Regular" size="16.0" />
+               </font>
+            </PasswordField>
+            <Label layoutX="208.0" layoutY="96.0" textFill="WHITE">
+               <font>
+                  <Font name="JetBrains Mono Bold" size="20.0" />
+               </font>
+            </Label>
+            <Button fx:id="registerButton" layoutX="300.0" layoutY="450.0" mnemonicParsing="false" onAction="#handleRegister" prefHeight="40.0" prefWidth="160.0" style="-fx-background-color: #404040; -fx-background-radius: 10;" text="Register" textFill="WHITE">
+               <font>
+                  <Font name="JetBrains Mono Regular" size="16.0" />
+               </font>
+            </Button>
+            <Label layoutX="165.0" layoutY="80.0" text="LOGIN / REGISTER" textFill="WHITE">
+               <font>
+                  <Font name="JetBrains Mono Bold" size="24.0" />
+               </font>
+            </Label>
+            <Label layoutX="40.0" layoutY="140.0" text="Username" textFill="WHITE">
+               <font>
+                  <Font name="JetBrains Mono Regular" size="14.0" />
+               </font>
+            </Label>
+            <Label layoutX="40.0" layoutY="220.0" text="Password" textFill="WHITE">
+               <font>
+                  <Font name="JetBrains Mono Regular" size="14.0" />
+               </font>
+            </Label>
+            <Label layoutX="40.0" layoutY="290.0" text="Re-enter Password" textFill="WHITE">
+               <font>
+                  <Font name="JetBrains Mono Regular" size="14.0" />
+               </font>
+            </Label>
+            <Label layoutX="40.0" layoutY="360.0" text="Email ID" textFill="WHITE">
+               <font>
+                  <Font name="JetBrains Mono Regular" size="14.0" />
+               </font>
+            </Label>
+            <Label fx:id="alertLabel" alignment="CENTER" layoutX="30.0" layoutY="517.0" prefHeight="19.0" prefWidth="500.0" textFill="#ff4343">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
             </children>
         </Pane>
+      <Label layoutX="119.0" layoutY="232.0" text="PASSIFY" textFill="WHITE" AnchorPane.bottomAnchor="360.0" AnchorPane.leftAnchor="119.0" AnchorPane.rightAnchor="757.0" AnchorPane.topAnchor="232.0">
+         <font>
+            <Font name="JetBrains Mono Bold" size="96.0" />
+         </font>
+      </Label>
+      <Label layoutX="69.0" layoutY="360.0" text="Secure Your Keys, Access with Ease." textFill="WHITE">
+         <font>
+            <Font name="JetBrains Mono Regular" size="24.0" />
+         </font>
+      </Label>
     </children>
 </AnchorPane>

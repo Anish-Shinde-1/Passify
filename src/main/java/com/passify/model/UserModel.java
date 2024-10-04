@@ -1,6 +1,6 @@
 package com.passify.model;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 public class UserModel {
     private String userId; // user_id
@@ -8,11 +8,11 @@ public class UserModel {
     private String hashedPassword; // hashed_password
     private String hashSalt; // hash_salt
     private String userEmail; // user_email
-    private LocalDateTime createdAt; // created_at
-    private LocalDateTime updatedAt; // updated_at
+    private Timestamp createdAt; // created_at
+    private Timestamp updatedAt; // updated_at
 
     // Constructor
-    public UserModel(String userId, String userName, String hashedPassword, String hashSalt, String userEmail, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public UserModel(String userId, String userName, String hashedPassword, String hashSalt, String userEmail, Timestamp createdAt, Timestamp updatedAt) {
         this.userId = userId;
         this.userName = userName;
         this.hashedPassword = hashedPassword;
@@ -23,7 +23,7 @@ public class UserModel {
     }
 
     // Default constructor
-    public UserModel () {
+    public UserModel() {
     }
 
     // Getters and Setters
@@ -67,26 +67,26 @@ public class UserModel {
         this.userEmail = userEmail;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public Timestamp getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
 
-    public LocalDateTime getUpdatedAt() {
+    public Timestamp getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(LocalDateTime updatedAt) {
+    public void setUpdatedAt(Timestamp updatedAt) {
         this.updatedAt = updatedAt;
     }
 
     @Override
     public String toString() {
-        return "User{" +
-                "userId=" + userId +
+        return "UserModel{" +
+                "userId='" + userId + '\'' +
                 ", userName='" + userName + '\'' +
                 ", hashedPassword='" + hashedPassword + '\'' +
                 ", hashSalt='" + hashSalt + '\'' +
@@ -96,8 +96,17 @@ public class UserModel {
                 '}';
     }
 
+    // Example main method for testing (if needed)
 //    public static void main(String[] args) {
-//        UserModel user = new UserModel("user123", "JohnDoe", "5f4dcc3b5aa765d61d8327deb882cf99", "randomSaltValue123", "john.doe@example.com", LocalDateTime.now().minusDays(10), LocalDateTime.now());
+//        UserModel user = new UserModel(
+//                "user123",
+//                "JohnDoe",
+//                "5f4dcc3b5aa765d61d8327deb882cf99",
+//                "randomSaltValue123",
+//                "john.doe@example.com",
+//                new Timestamp(System.currentTimeMillis()), // Current time for createdAt
+//                new Timestamp(System.currentTimeMillis())  // Current time for updatedAt
+//        );
 //        System.out.println(user);
 //    }
 }

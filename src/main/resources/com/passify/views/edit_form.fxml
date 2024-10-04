@@ -45,7 +45,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<Pane fx:id="editPasswordPanel" maxHeight="720.0" maxWidth="640.0" minHeight="720.0" minWidth="640.0" prefHeight="720.0" prefWidth="640.0" style="-fx-background-color: #1E1E1E; -fx-border-color: #000000; -fx-border-insets: 1 0 0 0.0;" BorderPane.alignment="CENTER" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+<Pane fx:id="editPasswordPanel" maxHeight="720.0" maxWidth="640.0" minHeight="720.0" minWidth="640.0" prefHeight="720.0" prefWidth="640.0" style="-fx-background-color: #1E1E1E; -fx-border-color: #000000; -fx-border-insets: 1 0 0 0.0;" BorderPane.alignment="CENTER" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.passify.controller.EditFormController">
     <children>
         <TextField fx:id="appUsername" layoutX="60.0" layoutY="200.0" prefHeight="40.0" prefWidth="520.0" style="-fx-text-fill: #FFFFFF; -fx-background-color: #404040;">
             <font>
@@ -63,7 +63,7 @@
                 <Font name="JetBrains Mono Regular" size="16.0" />
             </font>
         </TextField>
-        <Button fx:id="cancelEditButton" graphicTextGap="10.0" layoutX="384.0" layoutY="660.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="110.0" style="-fx-background-color: #3b3b3b;" text="Cancel" textFill="WHITE">
+        <Button fx:id="cancelEditButton" graphicTextGap="10.0" layoutX="384.0" layoutY="660.0" mnemonicParsing="false" onAction="#handleCancelEdit" prefHeight="40.0" prefWidth="110.0" style="-fx-background-color: #3b3b3b;" text="Cancel" textFill="WHITE">
             <font>
                 <Font name="JetBrains Mono Regular" size="16.0" />
             </font>
@@ -75,7 +75,7 @@
                 </ImageView>
             </graphic>
         </Button>
-        <Button fx:id="saveEditButton" graphicTextGap="10.0" layoutX="510.0" layoutY="660.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="110.0" style="-fx-background-color: #3b3b3b;" text="Save" textFill="WHITE">
+        <Button fx:id="saveEditButton" graphicTextGap="10.0" layoutX="510.0" layoutY="660.0" mnemonicParsing="false" onAction="#handleSaveEdit" prefHeight="40.0" prefWidth="110.0" style="-fx-background-color: #3b3b3b;" text="Save" textFill="WHITE">
             <font>
                 <Font name="JetBrains Mono Regular" size="16.0" />
             </font>

@@ -6,7 +6,7 @@ public class EncryptionKeyModel {
     private int encryptionKeyId; // encryption_key_id
     private int userId; // user_id
     private String encryptedDEK; // encrypted_DEK
-    private String encryptionSalt; // encryption_salt
+    private String KEKSalt; // encryption_salt
     private LocalDateTime createdAt; // created_at
 
     // Constructor
@@ -15,7 +15,7 @@ public class EncryptionKeyModel {
         this.encryptionKeyId = encryptionKeyId;
         this.userId = userId;
         this.encryptedDEK = encryptedDEK;
-        this.encryptionSalt = encryptionSalt;
+        this.KEKSalt = encryptionSalt;
         this.createdAt = createdAt;
     }
 
@@ -49,11 +49,11 @@ public class EncryptionKeyModel {
     }
 
     public String getEncryptionSalt() {
-        return encryptionSalt;
+        return KEKSalt;
     }
 
     public void setEncryptionSalt(String encryptionSalt) {
-        this.encryptionSalt = encryptionSalt;
+        this.KEKSalt = encryptionSalt;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -70,7 +70,7 @@ public class EncryptionKeyModel {
                 "encryptionKeyId=" + encryptionKeyId +
                 ", userId=" + userId +
                 ", encryptedDEK='" + encryptedDEK + '\'' +
-                ", encryptionSalt='" + encryptionSalt + '\'' +
+                ", encryptionSalt='" + KEKSalt + '\'' +
                 ", createdAt=" + createdAt +
                 '}';
     }
