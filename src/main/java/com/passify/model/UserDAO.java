@@ -2,21 +2,27 @@ package com.passify.model;
 
 import com.passify.utils.Hashing;
 import com.passify.utils.SaltGenerator;
+import com.passify.utils.Encryption;
 
+import javax.crypto.SecretKey;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.*;
+import java.util.Base64;
 import java.util.Optional;
 import java.util.UUID;
 
 public class UserDAO {
 
     private final Connection connection;
-    private final EncryptionKeyDAO encryptionKeyDAO; // Dependency on EncryptionKeyDAO for encryption handling
 
     public UserDAO(Connection connection) throws SQLException {
         this.connection = connection;
-        this.encryptionKeyDAO = new EncryptionKeyDAO(connection); // Initialize EncryptionKeyDAO
+    }
+
+    // Generate a new encryption key
+    private SecretKey generateEncryptionKey() throws Exception {
+        return Encryption.generateKey(); // Generate a new secret key
     }
 
     // Create a new user
@@ -32,24 +38,28 @@ public class UserDAO {
             return null; // Return null on failure
         }
 
-        // Step 1: Insert the new user into the User table
-        String insertUserSQL = "INSERT INTO User (user_id, user_name, hashed_password, hash_salt, user_email) VALUES (?, ?, ?, ?, ?)";
+        // Generate a new encryption key
+        SecretKey secretKey;
+        try {
+            secretKey = generateEncryptionKey();
+        } catch (Exception e) {
+            System.err.println("Error generating encryption key: " + e.getMessage());
+            return null; // Return null on failure
+        }
+
+        // Insert the new user into the User table
+        String insertUserSQL = "INSERT INTO User (user_id, user_name, hashed_password, hash_salt, user_email, encryption_key, created_at) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)";
         try (PreparedStatement pstmt = connection.prepareStatement(insertUserSQL)) {
             String userId = UUID.randomUUID().toString();
             pstmt.setString(1, userId);
             pstmt.setString(2, userName);
-            pstmt.setString(3, hashedPassword);
+            pstmt.setString(3, hashedPassword); // Store the hashed password
             pstmt.setString(4, hashSalt);
             pstmt.setString(5, userEmail);
+            pstmt.setString(6, Base64.getEncoder().encodeToString(secretKey.getEncoded())); // Store the base64-encoded encryption key
             pstmt.executeUpdate();
 
-            // Step 2: Store the DEK in the EncryptionKey table (via EncryptionKeyDAO)
-            boolean isDEKStored = encryptionKeyDAO.storeEncryptedDEK(userId);
-            if (!isDEKStored) {
-                throw new SQLException("Failed to store the DEK");
-            }
-
-            return new UserModel(userId, userName, hashedPassword, hashSalt, userEmail, new Timestamp(System.currentTimeMillis()), null);
+            return new UserModel(userId, userName, hashedPassword, hashSalt, userEmail, Base64.getEncoder().encodeToString(secretKey.getEncoded()), new Timestamp(System.currentTimeMillis()), null);
         } catch (SQLException e) {
             System.err.println("Error creating user: " + e.getMessage());
             return null; // Return null on failure
@@ -74,6 +84,8 @@ public class UserDAO {
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 return Optional.of(mapResultToUserModel(rs));
+            } else {
+                System.err.println("User not found with ID: " + userId);
             }
         } catch (SQLException e) {
             System.err.println("Error retrieving user by ID: " + e.getMessage());
@@ -89,6 +101,8 @@ public class UserDAO {
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 return Optional.of(mapResultToUserModel(rs));
+            } else {
+                System.err.println("User not found with email: " + userEmail);
             }
         } catch (SQLException e) {
             System.err.println("Error retrieving user by email: " + e.getMessage());
@@ -133,8 +147,9 @@ public class UserDAO {
         String hashedPassword = rs.getString("hashed_password");
         String hashSalt = rs.getString("hash_salt");
         String userEmail = rs.getString("user_email");
+        String encryptionKey = Base64.getEncoder().encodeToString(rs.getBytes("encryption_key")); // Fetch encryption_key and encode it
         Timestamp createdAt = rs.getTimestamp("created_at");
         Timestamp updatedAt = rs.getTimestamp("updated_at"); // Get updated_at directly as Timestamp
-        return new UserModel(userId, userName, hashedPassword, hashSalt, userEmail, createdAt, updatedAt);
+        return new UserModel(userId, userName, hashedPassword, hashSalt, userEmail, encryptionKey, createdAt, updatedAt);
     }
 }

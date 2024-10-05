@@ -61,7 +61,7 @@
                            </image></ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="all_itemsButton" alignment="BOTTOM_LEFT" defaultButton="true" graphicTextGap="20.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="320.0" style="-fx-background-color: #282828;" text="All Items" textFill="WHITE">
+                  <Button fx:id="all_itemsButton" alignment="BOTTOM_LEFT" defaultButton="true" graphicTextGap="20.0" mnemonicParsing="false" onAction="#loadAllPasswords" prefHeight="50.0" prefWidth="320.0" style="-fx-background-color: #282828;" text="All Items" textFill="WHITE">
                      <font>
                         <Font name="JetBrains Mono Regular" size="16.0" />
                      </font>
@@ -137,7 +137,7 @@
                         <Font name="JetBrains Mono Regular" size="16.0" />
                      </font>
                   </Label>
-                  <Button fx:id="workCategoryButton" alignment="BOTTOM_LEFT" defaultButton="true" graphicTextGap="20.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="320.0" style="-fx-background-color: #282828;" text="Work" textFill="WHITE">
+                  <Button fx:id="workCategoryButton" alignment="BOTTOM_LEFT" defaultButton="true" graphicTextGap="20.0" mnemonicParsing="false" onAction="#loadWorkPasswords" prefHeight="50.0" prefWidth="320.0" style="-fx-background-color: #282828;" text="Work" textFill="WHITE">
                      <font>
                         <Font name="JetBrains Mono Regular" size="16.0" />
                      </font>
@@ -148,7 +148,7 @@
                            </image></ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="socialCategoryButton" alignment="BOTTOM_LEFT" defaultButton="true" graphicTextGap="20.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="320.0" style="-fx-background-color: #282828;" text="Social" textFill="WHITE">
+                  <Button fx:id="socialCategoryButton" alignment="BOTTOM_LEFT" defaultButton="true" graphicTextGap="20.0" mnemonicParsing="false" onAction="#loadSocialPasswords" prefHeight="50.0" prefWidth="320.0" style="-fx-background-color: #282828;" text="Social" textFill="WHITE">
                      <font>
                         <Font name="JetBrains Mono Regular" size="16.0" />
                      </font>
@@ -159,7 +159,7 @@
                            </image></ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="miscCategoryButton" alignment="BOTTOM_LEFT" defaultButton="true" graphicTextGap="20.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="320.0" style="-fx-background-color: #282828;" text="Misc" textFill="WHITE">
+                  <Button fx:id="miscCategoryButton" alignment="BOTTOM_LEFT" defaultButton="true" graphicTextGap="20.0" mnemonicParsing="false" onAction="#loadMiscPasswords" prefHeight="50.0" prefWidth="320.0" style="-fx-background-color: #282828;" text="Misc" textFill="WHITE">
                      <font>
                         <Font name="JetBrains Mono Regular" size="16.0" />
                      </font>

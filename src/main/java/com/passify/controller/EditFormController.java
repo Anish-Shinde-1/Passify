@@ -1,14 +1,12 @@
 package com.passify.controller;
 
-import com.passify.model.EncryptionKeyDAO;
 import com.passify.model.PasswordDAO;
 import com.passify.model.PasswordModel;
+import com.passify.model.UserModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.fxml.FXMLLoader;
 
 import java.io.IOException;
@@ -31,7 +29,7 @@ public class EditFormController {
     private TextField appNotes;
 
     @FXML
-    private PasswordField appPassword;
+    private TextField appPassword;
 
     @FXML
     private TextField appUsername;
@@ -50,33 +48,47 @@ public class EditFormController {
 
     private PasswordModel currentPassword;
     private PasswordDAO passwordDAO;
-
-    // Injecting the database connection and encryption key DAO
     private Connection connection;
-    private EncryptionKeyDAO encryptionKeyDAO;
+    private UserModel currentUser;
 
-    // Initialize method to set up the controller
-    public void initialize(Connection connection, PasswordModel currentPassword, EncryptionKeyDAO encryptionKeyDAO) throws SQLException {
-        this.connection = connection; // Assign connection
-        this.encryptionKeyDAO = encryptionKeyDAO; // Assign EncryptionKeyDAO
-        this.passwordDAO = new PasswordDAO(connection, encryptionKeyDAO); // Create PasswordDAO with both parameters
+    // Reference to the parent controller (e.g., MainController)
+    private MainController parentController;
+
+    // Initialize method to set up the controller with dependencies
+    public void initialize(Connection connection, PasswordModel currentPassword, UserModel currentUser, MainController parentController) throws SQLException {
+        this.connection = connection;
+        this.passwordDAO = new PasswordDAO(connection);
+        this.currentUser = currentUser;
+        this.parentController = parentController; // Get reference to the parent controller
 
         if (currentPassword != null) {
-            setPassword(currentPassword); // Populate fields immediately
+            setPassword(currentPassword); // Populate fields with existing password data
         } else {
             logAndAlert("No password data provided.", null);
         }
+
+        // Populate the category list from enum values
+        populateCategoryList();
     }
 
     // Method to populate fields with current password details
     public void setPassword(PasswordModel password) {
         this.currentPassword = password;
         appName.setText(password.getAppName());
-        appCategoryList.setValue(password.getCategoryId()); // Adjust as per your implementation
         appUsername.setText(password.getAppUsername());
-        appPassword.setText(password.getEncryptedPassword()); // Consider decrypting if necessary
+        appPassword.setText(password.getEncryptedPassword()); // Consider decrypting the password for display
         appEmail.setText(password.getAppEmail());
         appNotes.setText(password.getAppNotes());
+
+        // Set the category name in the ChoiceBox
+        appCategoryList.setValue(password.getCategory().toString());
+    }
+
+    // Method to populate the category ChoiceBox with enum values
+    private void populateCategoryList() {
+        for (PasswordModel.Category category : PasswordModel.Category.values()) {
+            appCategoryList.getItems().add(category.toString()); // Add categories to the ChoiceBox
+        }
     }
 
     // Handle the action of saving the edited password details
@@ -90,32 +102,34 @@ public class EditFormController {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
-                // Collect data from fields
+                // Gather the updated data from input fields
                 String appNameText = appName.getText();
-                String appCategory = appCategoryList.getValue(); // Adjust type as necessary
+                String appCategoryName = appCategoryList.getValue();
+                PasswordModel.Category appCategory = PasswordModel.Category.valueOf(appCategoryName);
                 String appUsernameText = appUsername.getText();
-                String appPasswordText = appPassword.getText(); // Consider encryption
+                String appPasswordText = appPassword.getText(); // Encrypt the password if necessary
                 String appEmailText = appEmail.getText();
                 String appNotesText = appNotes.getText();
 
                 // Update the currentPassword object
                 currentPassword.setAppName(appNameText);
-                currentPassword.setCategoryId(appCategory); // Adjust as per your implementation
+                currentPassword.setCategory(appCategory);
                 currentPassword.setAppUsername(appUsernameText);
-                currentPassword.setEncryptedPassword(appPasswordText); // Consider encrypting
+                currentPassword.setEncryptedPassword(appPasswordText); // Encrypt if needed
                 currentPassword.setAppEmail(appEmailText);
                 currentPassword.setAppNotes(appNotesText);
 
-                // Save changes to the database
-                String userId = currentPassword.getUserId(); // Assuming userId is available
-                if (passwordDAO.updatePassword(currentPassword, userId)) { // Pass both PasswordModel and userId
+                // Save the changes to the database
+                if (passwordDAO.updatePassword(currentPassword, currentUser)) {
                     System.out.println("Password details updated successfully.");
-                    navigateBackToPasswordDetails(); // Navigate back to password details
+                    navigateBackToPasswordDetails(); // Navigate back to the password details view
                 } else {
-                    logAndAlert("Failed to update password details", null);
+                    logAndAlert("Failed to update password details.", null);
                 }
             } catch (SQLException e) {
                 logAndAlert("An error occurred while updating password details.", e);
+            } catch (IllegalArgumentException e) {
+                logAndAlert("Invalid category selected.", e);
             }
         }
     }
@@ -130,33 +144,25 @@ public class EditFormController {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            navigateBackToPasswordDetails(); // Navigate back to password details
+            navigateBackToPasswordDetails(); // Navigate back to the password details view
         }
     }
 
-    // Navigate back to PasswordDetailsController
+    // Navigate back to PasswordDetailsController within the same page holder
     private void navigateBackToPasswordDetails() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/passify/views/password_details.fxml"));
-            Parent root = loader.load();
+            Parent passwordDetailsView = loader.load();
 
-            // Get the controller for the new form
+            // Get the controller for the password details view
             PasswordDetailsController passwordDetailsController = loader.getController();
-            passwordDetailsController.initialize(connection, currentPassword, encryptionKeyDAO); // Pass the connection, current password, and encryption key DAO
+            passwordDetailsController.initialize(connection, currentPassword, currentUser, parentController); // Pass dependencies
 
-            Stage stage = (Stage) editPasswordPanel.getScene().getWindow(); // Get the current window
-            stage.setScene(new Scene(root)); // Set the new scene
-            stage.setTitle("Password Details"); // Optionally set a new title
-            stage.show(); // Show the updated window
+            // Use the parentController to switch views within the pageHolder
+            parentController.setPageHolderContent(passwordDetailsView); // Load the password details view into the pageHolder
         } catch (IOException | SQLException e) {
             logAndAlert("Failed to navigate back to password details.", e);
         }
-    }
-
-    // Method to close the current window
-    private void closeWindow() {
-        Stage stage = (Stage) editPasswordPanel.getScene().getWindow(); // Get the current window
-        stage.close(); // Close the window
     }
 
     // Helper method to log and display errors in UI
@@ -165,7 +171,8 @@ public class EditFormController {
         if (e != null) {
             e.printStackTrace();
         }
-        // Show a dialog or alert to the user
+
+        // Show an error dialog to the user
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
         alert.setHeaderText(message);

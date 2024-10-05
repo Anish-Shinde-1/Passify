@@ -1,8 +1,8 @@
 package com.passify.controller;
 
-import com.passify.model.EncryptionKeyDAO;
 import com.passify.model.PasswordDAO;
 import com.passify.model.PasswordModel;
+import com.passify.model.UserModel; // Assuming UserModel is defined
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -18,6 +18,7 @@ import javafx.scene.Scene;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Optional;
 
 public class PasswordDetailsController {
     @FXML
@@ -52,19 +53,19 @@ public class PasswordDetailsController {
     private PasswordDAO passwordDAO;
     private PasswordModel currentPassword;
     private Stage stage;
+    private MainController mainController;
+
 
     // Injecting the database connection from the main application or other controller
     private Connection connection;
+    private UserModel currentUser; // Assuming you want to track the current user
 
-    // Injecting the EncryptionKeyDAO
-    private EncryptionKeyDAO encryptionKeyDAO;
-
-    public void initialize(Connection connection, PasswordModel password, EncryptionKeyDAO encryptionKeyDAO) throws SQLException {
+    public void initialize(Connection connection, PasswordModel password, UserModel user, MainController mainController) throws SQLException {
         this.connection = connection;
-        this.encryptionKeyDAO = encryptionKeyDAO; // Assign the passed EncryptionKeyDAO
-        this.passwordDAO = new PasswordDAO(connection, encryptionKeyDAO); // Pass both parameters
-
+        this.passwordDAO = new PasswordDAO(connection); // Only require the PasswordDAO
+        this.currentUser = user; // Store the current user
         this.currentPassword = password;
+        this.mainController = mainController; // Store the MainController
 
         populatePasswordDetails();
     }
@@ -73,24 +74,34 @@ public class PasswordDetailsController {
     private void populatePasswordDetails() {
         if (currentPassword != null) {
             appName.setText(currentPassword.getAppName());
-            appCategory.setText(currentPassword.getCategoryId());
+            appCategory.setText(currentPassword.getCategory().name()); // Assuming enum for category
             appUsername.setText(currentPassword.getAppUsername());
-            appPassword.setText(currentPassword.getEncryptedPassword());  // Decrypt if necessary
+            appPassword.setText("                "); // Do not show the encrypted password
             appEmail.setText(currentPassword.getAppEmail());
             appUrl.setText(currentPassword.getAppUrl());
             appNotes.setText(currentPassword.getAppNotes());
-            updateFavoriteButtonState(); // Ensure button state reflects current favorite status
+            updateFavoriteButtonState();
         } else {
             logAndAlert("Current password data is missing.", null);
         }
     }
 
     // Copy password to clipboard
+    // Copy password to clipboard
     @FXML
     private void handleCopyAppPassword() {
         try {
-            copyToClipboard(appPassword.getText());
-            System.out.println("Password copied to clipboard");
+            // Decrypt password before copying
+            Optional<PasswordModel> passwordOpt = passwordDAO.getPasswordById(currentPassword.getPasswordId(), currentUser);
+            if (passwordOpt.isPresent()) {
+                String decryptedPassword = passwordOpt.get().getAppPassword(); // Corrected to appPassword
+                copyToClipboard(decryptedPassword);
+                decryptedPassword = null;
+                showCopyConfirmation("Password copied to clipboard!");
+                System.out.println("Password copied to clipboard");
+            } else {
+                logAndAlert("Unable to retrieve the password for copying.", null);
+            }
         } catch (Exception e) {
             logAndAlert("Password wasn't copied", e);
         }
@@ -100,7 +111,9 @@ public class PasswordDetailsController {
     @FXML
     private void handleCopyAppUsername() {
         try {
-            copyToClipboard(appUsername.getText());
+            String username = appUsername.getText();
+            copyToClipboard(username);
+            showCopyConfirmation("Username copied to clipboard!"); // Show confirmation message
             System.out.println("AppUsername copied to clipboard");
         } catch (Exception e) {
             logAndAlert("AppUsername wasn't copied", e);
@@ -111,39 +124,48 @@ public class PasswordDetailsController {
     @FXML
     private void handleCopyAppEmail() {
         try {
-            copyToClipboard(appEmail.getText());
+            String email = appEmail.getText();
+            copyToClipboard(email);
+            showCopyConfirmation("Email copied to clipboard!"); // Show confirmation message
             System.out.println("AppEmail copied to clipboard");
         } catch (Exception e) {
             logAndAlert("AppEmail wasn't copied", e);
         }
     }
 
+    // Method to show a confirmation alert when something is copied
+    private void showCopyConfirmation(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Copy Confirmation");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
     @FXML
     private void handleEditPassword() {
         try {
-            // Load the new FXML
+            // Load the edit_form.fxml
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/passify/views/edit_form.fxml"));
-            Parent root = loader.load();
+            Parent editFormView = loader.load();
 
-            // Get the controller for the new form
+            // Get the EditFormController and initialize it
             EditFormController editFormController = loader.getController();
-            // Pass the connection, current password, and encryption key DAO
-            editFormController.initialize(connection, currentPassword, encryptionKeyDAO);
 
-            // Set the new scene to the current stage
-            Stage currentStage = (Stage) favouritePasswordButton.getScene().getWindow(); // Get the current window
-            currentStage.setScene(new Scene(root)); // Set the new scene
+            // Make sure to pass the MainController (this.mainController) in addition to the other arguments
+            editFormController.initialize(connection, currentPassword, currentUser, mainController);
 
-            // Optionally, set the title for the new scene
-            currentStage.setTitle("Edit Password");
+            // Load the edit form into the pageHolder of MainController
+            mainController.getPageHolder().getChildren().clear(); // Clear previous content
+            mainController.getPageHolder().getChildren().add(editFormView); // Add the new view
 
-            // Show the updated window (if there are other UI elements to consider)
-            currentStage.show();
-
+            System.out.println("Edit password form loaded successfully.");
         } catch (IOException | SQLException e) {
-            logAndAlert("Failed to load edit form or update password.", e);
+            e.printStackTrace();
+            System.out.println("Failed to load edit form.");
         }
     }
+
 
     // Move password to trash (soft delete)
     @FXML
@@ -166,11 +188,8 @@ public class PasswordDetailsController {
         try {
             currentPassword.setFavourite(!currentPassword.isFavourite());
 
-            // Assuming you have the userId for the update
-            String userId = currentPassword.getUserId(); // Adjust as necessary to obtain the user ID
-
-            // Call updatePassword with both PasswordModel and userId
-            if (passwordDAO.updatePassword(currentPassword, userId)) { // Make sure both parameters are passed
+            // Update the password's favorite status
+            if (passwordDAO.updatePassword(currentPassword, currentUser)) { // Assuming updatePassword requires currentUser
                 System.out.println("Password marked as favorite.");
                 updateFavoriteButtonState();
             } else {
@@ -180,7 +199,6 @@ public class PasswordDetailsController {
             logAndAlert("An error occurred while updating the favorite status.", e);
         }
     }
-
 
     // Method to copy text to clipboard
     private void copyToClipboard(String text) {
@@ -215,13 +233,16 @@ public class PasswordDetailsController {
         this.stage = stage;
     }
 
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
+    }
+
     // Helper method to log and display errors in UI
     private void logAndAlert(String message, Exception e) {
         System.out.println(message);
         if (e != null) {
             e.printStackTrace();
         }
-        // Show a dialog or alert to the user
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
         alert.setHeaderText(message);

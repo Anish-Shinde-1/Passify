@@ -11,13 +11,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class PasswordDAO {
-
     private final Connection connection;
-    private final EncryptionKeyDAO encryptionKeyDAO; // EncryptionKeyDAO for key management
 
-    public PasswordDAO(Connection connection, EncryptionKeyDAO encryptionKeyDAO) throws SQLException {
+    public PasswordDAO(Connection connection) throws SQLException {
         this.connection = connection;
-        this.encryptionKeyDAO = encryptionKeyDAO;
 
         if (this.connection == null) {
             throw new SQLException("Connection is null!");
@@ -25,38 +22,34 @@ public class PasswordDAO {
     }
 
     // Create a new password entry
-    public boolean addPassword(PasswordModel password, String userId) throws SQLException {
+    public boolean addPassword(PasswordModel password, UserModel user) throws SQLException {
         // Generate salt for encryption
         byte[] encryptionSalt = SaltGenerator.generateSalt();
         String encryptedPassword;
 
         try {
-            // Retrieve the DEK (Data Encryption Key) for the user from EncryptionKeyDAO
-            Optional<SecretKey> secretKeyOpt = encryptionKeyDAO.getSecretKeyForUser(userId);
-            if (!secretKeyOpt.isPresent()) {
-                throw new SQLException("Failed to retrieve encryption key for the user.");
-            }
-            SecretKey secretKey = secretKeyOpt.get();
+            // Get the SecretKey from the UserModel
+            SecretKey secretKey = user.getSecretKey();
 
-            // Encrypt the password using the user's DEK and generated salt
+            // Encrypt the password using the user's encryption key and generated salt
             encryptedPassword = Encryption.encrypt(password.getAppUsername(), encryptionSalt, secretKey);
         } catch (Exception e) {
             System.err.println("Error encrypting password: " + e.getMessage());
             return false; // Return false on failure
         }
 
-        String sql = "INSERT INTO Password (password_id, user_id, encrypted_password, encryption_salt, category_id, app_name, app_username, app_url, app_email, app_notes, password_state, isFavourite) " +
+        String sql = "INSERT INTO Password (password_id, user_id, encrypted_password, encryption_salt, category, app_name, app_username, app_url, app_email, app_notes, password_state, isFavourite) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         // Generate a new UUID for the password_id
         String generatedId = UUID.randomUUID().toString();
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, generatedId);  // Use the generated ID here
+            statement.setString(1, generatedId);
             statement.setString(2, password.getUserId());
             statement.setString(3, encryptedPassword);
             statement.setString(4, SaltGenerator.getBase64EncodedSalt(encryptionSalt));
-            statement.setString(5, password.getCategoryId());
+            statement.setString(5, password.getCategory().name()); // Use enum name for category
             statement.setString(6, password.getAppName());
             statement.setString(7, password.getAppUsername());
             statement.setString(8, password.getAppUrl());
@@ -65,7 +58,6 @@ public class PasswordDAO {
             statement.setString(11, password.getPasswordState());
             statement.setBoolean(12, password.isFavourite());
 
-            // Execute the update and return true if successful
             boolean result = statement.executeUpdate() > 0;
 
             if (result) {
@@ -76,7 +68,7 @@ public class PasswordDAO {
     }
 
     // Retrieve a password by its ID (returns Optional)
-    public Optional<PasswordModel> getPasswordById(String passwordId, String userId) throws SQLException {
+    public Optional<PasswordModel> getPasswordById(String passwordId, UserModel user) throws SQLException {
         String sql = "SELECT * FROM Password WHERE password_id = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -88,15 +80,10 @@ public class PasswordDAO {
 
                     // Decrypt the password
                     try {
-                        // Retrieve the DEK (Data Encryption Key) for the user from EncryptionKeyDAO
-                        Optional<SecretKey> secretKeyOpt = encryptionKeyDAO.getSecretKeyForUser(userId);
-                        if (!secretKeyOpt.isPresent()) {
-                            throw new SQLException("Failed to retrieve encryption key for the user.");
-                        }
-                        SecretKey secretKey = secretKeyOpt.get();
-
-                        String decryptedPassword = Encryption.decrypt(passwordModel.getEncryptedPassword(), SaltGenerator.getBase64DecodedSalt(passwordModel.getEncryptionSalt()), secretKey);
-                        passwordModel.setAppUsername(decryptedPassword); // Assuming appUsername is used to store the password
+                        SecretKey secretKey = Encryption.deriveKey(user.getEncryptionKey()); // Derive the key
+                        String decryptedPassword = Encryption.decrypt(passwordModel.getEncryptedPassword(),
+                                SaltGenerator.getBase64DecodedSalt(passwordModel.getEncryptionSalt()), secretKey);
+                        passwordModel.setAppPassword(decryptedPassword); // Set decrypted password
                     } catch (Exception e) {
                         System.err.println("Error decrypting password: " + e.getMessage());
                         return Optional.empty(); // Return empty if decryption fails
@@ -105,8 +92,6 @@ public class PasswordDAO {
                 }
             }
         }
-
-        // Return an empty Optional if no password is found
         return Optional.empty();
     }
 
@@ -131,17 +116,13 @@ public class PasswordDAO {
     }
 
     // Update a password entry
-    public boolean updatePassword(PasswordModel password, String userId) throws SQLException {
+    public boolean updatePassword(PasswordModel password, UserModel user) throws SQLException {
         String encryptedPassword;
         byte[] encryptionSalt = SaltGenerator.generateSalt();
 
         try {
-            // Retrieve the DEK (Data Encryption Key) for the user from EncryptionKeyDAO
-            Optional<SecretKey> secretKeyOpt = encryptionKeyDAO.getSecretKeyForUser(userId);
-            if (!secretKeyOpt.isPresent()) {
-                throw new SQLException("Failed to retrieve encryption key for the user.");
-            }
-            SecretKey secretKey = secretKeyOpt.get();
+            // Get the SecretKey from the UserModel
+            SecretKey secretKey = user.getSecretKey();
 
             // Encrypt the password before updating
             encryptedPassword = Encryption.encrypt(password.getAppUsername(), encryptionSalt, secretKey);
@@ -152,17 +133,17 @@ public class PasswordDAO {
             return false; // Return false on failure
         }
 
-        String sql = "UPDATE Password SET encrypted_password = ?, encryption_salt = ?, category_id = ?, app_name = ?, app_username = ?, app_url = ?, app_email = ?, app_notes = ?, password_state = ?, isFavourite = ?, updated_at = CURRENT_TIMESTAMP " +
+        String sql = "UPDATE Password SET encrypted_password = ?, encryption_salt = ?, category = ?, app_name = ?, app_username = ?, app_url = ?, app_email = ?, app_notes = ?, password_state = ?, isFavourite = ?, updated_at = CURRENT_TIMESTAMP " +
                 "WHERE password_id = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, password.getEncryptedPassword());
             statement.setString(2, password.getEncryptionSalt());
-            statement.setString(3, password.getCategoryId());
+            statement.setString(3, password.getCategory().name()); // Use enum name for category
             statement.setString(4, password.getAppName());
             statement.setString(5, password.getAppUsername());
             statement.setString(6, password.getAppUrl());
-            statement.setString(7, password.getAppEmail());  // Include appEmail here
+            statement.setString(7, password.getAppEmail());
             statement.setString(8, password.getAppNotes());
             statement.setString(9, password.getPasswordState());
             statement.setBoolean(10, password.isFavourite());
@@ -203,46 +184,29 @@ public class PasswordDAO {
     // Helper function to map a result set row to a PasswordModel object
     private PasswordModel mapResultSetToPasswordModel(ResultSet resultSet) throws SQLException {
         PasswordModel password = new PasswordModel();
+
         password.setPasswordId(resultSet.getString("password_id"));
         password.setUserId(resultSet.getString("user_id"));
         password.setEncryptedPassword(resultSet.getString("encrypted_password"));
         password.setEncryptionSalt(resultSet.getString("encryption_salt"));
-        password.setCategoryId(resultSet.getString("category_id"));
+
+        // Map the category from the result set to the Category enum
+        String categoryValue = resultSet.getString("category");
+        try {
+            password.setCategory(PasswordModel.Category.fromString(categoryValue)); // Use fromString method
+        } catch (IllegalArgumentException e) {
+            System.err.println("Invalid category value: " + categoryValue);
+            password.setCategory(PasswordModel.Category.MISC); // Default to MISC or handle as needed
+        }
+
         password.setAppName(resultSet.getString("app_name"));
         password.setAppUsername(resultSet.getString("app_username"));
         password.setAppUrl(resultSet.getString("app_url"));
-        password.setAppEmail(resultSet.getString("app_email")); // Retrieve appEmail from ResultSet
+        password.setAppEmail(resultSet.getString("app_email"));
         password.setAppNotes(resultSet.getString("app_notes"));
         password.setPasswordState(resultSet.getString("password_state"));
         password.setFavourite(resultSet.getBoolean("isFavourite"));
-        password.setCreatedAt(resultSet.getTimestamp("created_at"));
-        password.setUpdatedAt(resultSet.getTimestamp("updated_at"));
 
         return password;
-    }
-
-    // Method to retrieve the current database connection
-    public Connection getConnection() {
-        return connection;
-    }
-
-    public static PasswordModel getMockPassword() {
-        PasswordModel password = new PasswordModel();
-        password.setPasswordId("mock_password_id");
-        password.setUserId("mock_user_id");
-        password.setEncryptedPassword("mock_encrypted_password");
-        password.setEncryptionSalt("mock_encryption_salt");
-        password.setCategoryId("mock_category_id");
-        password.setAppName("mock_app_name");
-        password.setAppUsername("mock_app_username");
-        password.setAppUrl("http://mockapp.com");
-        password.setAppEmail("mockemail@example.com");  // Set mock email
-        password.setAppNotes("Some notes about the app");
-        password.setPasswordState("active");
-        password.setFavourite(true);  // or false depending on the mock user
-        password.setCreatedAt(new Timestamp(System.currentTimeMillis()));  // Sets to current timestamp
-        password.setUpdatedAt(new Timestamp(System.currentTimeMillis()));  // Sets to current timestamp
-
-        return password;  // Don't forget to return the password object
     }
 }
