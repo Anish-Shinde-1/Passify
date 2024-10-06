@@ -3,14 +3,17 @@ package com.passify.controller;
 import com.passify.model.PasswordDAO;
 import com.passify.model.PasswordModel;
 import com.passify.model.UserModel;
+import com.passify.utils.JDBC_Connector;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -209,9 +212,57 @@ public class MainController {
         pageHolder.getChildren().add(content); // Add the new content to the pageHolder
     }
 
-    // Placeholder for future methods (e.g., signOut, search functionality, etc.)
+    @FXML
+    private void handleAddNewPassword() {
+        try {
+            // Load the edit_form.fxml
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/passify/views/edit_form.fxml"));
+            Parent root = loader.load();
+
+            // Get the controller and set up the form for adding a new password
+            EditFormController controller = loader.getController();
+            controller.initialize(connection, null, currentUser, this); // Pass null as currentPassword for "Add" functionality
+
+            // Clear existing content in the pageHolder
+            pageHolder.getChildren().clear();
+            // Add the new form to the pageHolder
+            pageHolder.getChildren().add(root);
+
+            System.out.println("Add New Password form loaded successfully in the pageHolder.");
+        } catch (IOException | SQLException e) {
+            System.out.println("Error loading the add new password form: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleSignOut(ActionEvent event) {
+        System.out.println("Sign out button clicked.");
+        signOut(); // Call the sign-out method
+    }
+
+    // Method to handle sign-out logic
     private void signOut() {
-        // Implement sign-out logic (e.g., redirect to login screen)
-        System.out.println("Sign out method called.");
+        try {
+            // Load the login screen (login_screen.fxml)
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/passify/views/login_screen.fxml"));
+            Parent loginView = loader.load();
+
+            // Get the LoginController and set up any necessary data (if required)
+            LoginController loginController = loader.getController();
+            // You can initialize the loginController if needed
+            Connection connection = JDBC_Connector.getConnection(); // Get a new connection
+            loginController.setConnection(connection);
+
+            // Switch back to the login scene
+            Scene loginScene = new Scene(loginView);
+            Stage currentStage = (Stage) signoutButton.getScene().getWindow(); // Get the current stage (window)
+            currentStage.setScene(loginScene); // Set the login scene
+            currentStage.show(); // Show the new scene
+
+            System.out.println("User signed out and returned to login screen.");
+        } catch (IOException | SQLException e) {
+            e.printStackTrace(); // Handle errors
+            System.out.println("Failed to load login screen during sign out.");
+        }
     }
 }

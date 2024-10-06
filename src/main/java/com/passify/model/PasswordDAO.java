@@ -29,10 +29,10 @@ public class PasswordDAO {
 
         try {
             // Get the SecretKey from the UserModel
-            SecretKey secretKey = user.getSecretKey();
+            SecretKey secretKey = user.getEncryptionKey(); // Update to use getEncryptionKey()
 
             // Encrypt the password using the user's encryption key and generated salt
-            encryptedPassword = Encryption.encrypt(password.getAppUsername(), encryptionSalt, secretKey);
+            encryptedPassword = Encryption.encrypt(password.getAppPassword(), encryptionSalt, secretKey);
         } catch (Exception e) {
             System.err.println("Error encrypting password: " + e.getMessage());
             return false; // Return false on failure
@@ -80,7 +80,7 @@ public class PasswordDAO {
 
                     // Decrypt the password
                     try {
-                        SecretKey secretKey = Encryption.deriveKey(user.getEncryptionKey()); // Derive the key
+                        SecretKey secretKey = user.getEncryptionKey(); // Update to use getEncryptionKey()
                         String decryptedPassword = Encryption.decrypt(passwordModel.getEncryptedPassword(),
                                 SaltGenerator.getBase64DecodedSalt(passwordModel.getEncryptionSalt()), secretKey);
                         passwordModel.setAppPassword(decryptedPassword); // Set decrypted password
@@ -118,16 +118,24 @@ public class PasswordDAO {
     // Update a password entry
     public boolean updatePassword(PasswordModel password, UserModel user) throws SQLException {
         String encryptedPassword;
-        byte[] encryptionSalt = SaltGenerator.generateSalt();
+        // Retrieve the existing salt from the database first
+        String existingSalt = getExistingSalt(password.getPasswordId());
+
+        if (existingSalt == null) {
+            System.err.println("No existing salt found for password ID: " + password.getPasswordId());
+            return false; // Handle the case where no salt is found
+        }
+
+        byte[] encryptionSalt = SaltGenerator.getBase64DecodedSalt(existingSalt); // Decode the existing salt
 
         try {
             // Get the SecretKey from the UserModel
-            SecretKey secretKey = user.getSecretKey();
+            SecretKey secretKey = user.getEncryptionKey(); // Update to use getEncryptionKey()
 
             // Encrypt the password before updating
-            encryptedPassword = Encryption.encrypt(password.getAppUsername(), encryptionSalt, secretKey);
+            encryptedPassword = Encryption.encrypt(password.getAppPassword(), encryptionSalt, secretKey);
             password.setEncryptedPassword(encryptedPassword);
-            password.setEncryptionSalt(SaltGenerator.getBase64EncodedSalt(encryptionSalt));
+            password.setEncryptionSalt(existingSalt); // Use the existing salt
         } catch (Exception e) {
             System.err.println("Error encrypting password: " + e.getMessage());
             return false; // Return false on failure
@@ -150,15 +158,25 @@ public class PasswordDAO {
             statement.setString(11, password.getPasswordId());
 
             int rowsUpdated = statement.executeUpdate();
-            if (rowsUpdated == 0) {
-                System.out.println("No password found with the given ID: " + password.getPasswordId());
-                return false;
-            }
-            return true;
+            return rowsUpdated > 0;
         } catch (SQLException e) {
             System.err.println("Error updating password: " + e.getMessage());
             throw e; // Rethrow the exception for further handling
         }
+    }
+
+    // Helper method to get existing salt from database
+    private String getExistingSalt(String passwordId) throws SQLException {
+        String sql = "SELECT encryption_salt FROM Password WHERE password_id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, passwordId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getString("encryption_salt");
+                }
+            }
+        }
+        return null; // Return null if no salt is found
     }
 
     // Move password to trash (soft delete)

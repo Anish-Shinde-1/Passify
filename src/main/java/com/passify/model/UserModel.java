@@ -4,6 +4,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
+import java.util.Base64;
 
 public class UserModel {
     private String userId; // user_id
@@ -11,12 +12,12 @@ public class UserModel {
     private String hashedPassword; // hashed_password
     private String hashSalt; // hash_salt
     private String userEmail; // user_email
-    private String encryptionKey; // New encryption_key attribute
+    private SecretKey encryptionKey; // Changed to SecretKey type
     private Timestamp createdAt; // created_at
     private Timestamp updatedAt; // updated_at
 
     // Constructor
-    public UserModel(String userId, String userName, String hashedPassword, String hashSalt, String userEmail, String encryptionKey, Timestamp createdAt, Timestamp updatedAt) {
+    public UserModel(String userId, String userName, String hashedPassword, String hashSalt, String userEmail, SecretKey encryptionKey, Timestamp createdAt, Timestamp updatedAt) {
         this.userId = userId;
         this.userName = userName;
         this.hashedPassword = hashedPassword;
@@ -72,19 +73,23 @@ public class UserModel {
         this.userEmail = userEmail;
     }
 
-    public String getEncryptionKey() {
+    public SecretKey getEncryptionKey() {
         return encryptionKey; // Getter for encryptionKey
     }
 
-    public void setEncryptionKey(String encryptionKey) {
+    public void setEncryptionKey(SecretKey encryptionKey) {
         this.encryptionKey = encryptionKey; // Setter for encryptionKey
     }
 
-    public SecretKey getSecretKey() {
-        // Convert the string to a byte array using UTF-8 encoding
-        byte[] keyBytes = encryptionKey.getBytes(StandardCharsets.UTF_8);
-        // Create a SecretKeySpec from the byte array
-        return new SecretKeySpec(keyBytes, 0, keyBytes.length, "AES"); // Change "AES" to your encryption algorithm if needed
+    // Converts SecretKey to Base64 String for storage
+    public String getEncryptionKeyAsString() {
+        return Base64.getEncoder().encodeToString(encryptionKey.getEncoded());
+    }
+
+    // Creates SecretKey from Base64 String
+    public void setEncryptionKeyFromString(String keyString) {
+        byte[] decodedKey = Base64.getDecoder().decode(keyString);
+        this.encryptionKey = new SecretKeySpec(decodedKey, 0, decodedKey.length, "AES");
     }
 
     public Timestamp getCreatedAt() {
@@ -111,7 +116,7 @@ public class UserModel {
                 ", hashedPassword='" + hashedPassword + '\'' +
                 ", hashSalt='" + hashSalt + '\'' +
                 ", userEmail='" + userEmail + '\'' +
-                ", encryptionKey='" + encryptionKey + '\'' + // Include encryptionKey in toString
+                ", encryptionKey='" + getEncryptionKeyAsString() + '\'' + // Include encryptionKey in toString
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 '}';
@@ -125,7 +130,7 @@ public class UserModel {
     //             "5f4dcc3b5aa765d61d8327deb882cf99",
     //             "randomSaltValue123",
     //             "john.doe@example.com",
-    //             "encryptionKeyValue123", // Sample encryption key
+    //             generateKey(), // Sample encryption key generation
     //             new Timestamp(System.currentTimeMillis()), // Current time for createdAt
     //             new Timestamp(System.currentTimeMillis())  // Current time for updatedAt
     //     );

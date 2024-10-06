@@ -34,6 +34,9 @@ public class Encryption {
 
     // Encrypts the given plain text using the provided salt and secret key
     public static String encrypt(String plainText, byte[] salt, SecretKey secretKey) throws Exception {
+        if (plainText == null) {
+            throw new IllegalArgumentException("Plain text cannot be null");
+        }
         // Initialize the cipher
         Cipher cipher = Cipher.getInstance(TRANSFORMATION);
         // Generate a random IV (Initialization Vector) for encryption

@@ -55,7 +55,6 @@ public class PasswordDetailsController {
     private Stage stage;
     private MainController mainController;
 
-
     // Injecting the database connection from the main application or other controller
     private Connection connection;
     private UserModel currentUser; // Assuming you want to track the current user
@@ -81,12 +80,12 @@ public class PasswordDetailsController {
             appUrl.setText(currentPassword.getAppUrl());
             appNotes.setText(currentPassword.getAppNotes());
             updateFavoriteButtonState();
-        } else {
-            logAndAlert("Current password data is missing.", null);
         }
+//        else {
+//            logAndAlert("Current password data is missing.", null);
+//        }
     }
 
-    // Copy password to clipboard
     // Copy password to clipboard
     @FXML
     private void handleCopyAppPassword() {
@@ -96,7 +95,7 @@ public class PasswordDetailsController {
             if (passwordOpt.isPresent()) {
                 String decryptedPassword = passwordOpt.get().getAppPassword(); // Corrected to appPassword
                 copyToClipboard(decryptedPassword);
-                decryptedPassword = null;
+                decryptedPassword = null; // Clear sensitive data
                 showCopyConfirmation("Password copied to clipboard!");
                 System.out.println("Password copied to clipboard");
             } else {
@@ -152,7 +151,7 @@ public class PasswordDetailsController {
             // Get the EditFormController and initialize it
             EditFormController editFormController = loader.getController();
 
-            // Make sure to pass the MainController (this.mainController) in addition to the other arguments
+            // Pass the MainController (this.mainController) along with other arguments
             editFormController.initialize(connection, currentPassword, currentUser, mainController);
 
             // Load the edit form into the pageHolder of MainController
@@ -162,10 +161,9 @@ public class PasswordDetailsController {
             System.out.println("Edit password form loaded successfully.");
         } catch (IOException | SQLException e) {
             e.printStackTrace();
-            System.out.println("Failed to load edit form.");
+            logAndAlert("Failed to load edit form.", e);
         }
     }
-
 
     // Move password to trash (soft delete)
     @FXML

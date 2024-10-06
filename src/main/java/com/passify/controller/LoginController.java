@@ -65,11 +65,12 @@ public class LoginController {
     private void handleLogin(ActionEvent event) {
         System.out.println("Login button pressed."); // Debug statement
 
+        String username = userName.getText().trim();
         String email = userEmail.getText().trim(); // Use userEmail for login
         String password = masterPassword.getText();
         String reEnteredPassword = reEnteredMasterPassword.getText(); // Get the re-entered password
 
-        if (email.isEmpty() || password.isEmpty() || reEnteredPassword.isEmpty()) {
+        if (username.isEmpty() || email.isEmpty() || password.isEmpty() || reEnteredPassword.isEmpty()) {
             alertLabel.setText("Please fill in all fields.");
             return;
         }

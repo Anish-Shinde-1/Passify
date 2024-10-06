@@ -25,7 +25,7 @@ public class PasswordModel {
     private String passwordId; // password_id
     private String userId; // user_id
     private String encryptedPassword; // encrypted_password
-    private String appPassword = null;
+    private String appPassword;
     private String encryptionSalt; // encryption_salt
     private Category category; // Changed to use the Category enum
     private String appName; // app_name
@@ -37,6 +37,50 @@ public class PasswordModel {
     private boolean isFavourite; // isFavourite
     private Timestamp createdAt; // created_at
     private Timestamp updatedAt; // updated_at
+
+    // Custom constructor
+    public PasswordModel(String userId, String encryptedPassword, String encryptionSalt,
+                         Category category, String appName, String appUsername,
+                         String appUrl, String appEmail, String appNotes,
+                         String passwordState, boolean isFavourite) {
+        this.userId = userId;
+        this.encryptedPassword = encryptedPassword;
+        this.encryptionSalt = encryptionSalt;
+        this.category = category;
+        this.appName = appName;
+        this.appUsername = appUsername;
+        this.appUrl = appUrl;
+        this.appEmail = appEmail;
+        this.appNotes = appNotes;
+        this.passwordState = passwordState;
+        this.isFavourite = isFavourite;
+        this.createdAt = new Timestamp(System.currentTimeMillis()); // Initialize createdAt
+        this.updatedAt = new Timestamp(System.currentTimeMillis()); // Initialize updatedAt
+    }
+
+    public PasswordModel(String userId, String encryptedPassword, String appPassword, String encryptionSalt,
+                         Category category, String appName, String appUsername,
+                         String appUrl, String appEmail, String appNotes,
+                         String passwordState, boolean isFavourite) {
+        this.userId = userId;
+        this.encryptedPassword = encryptedPassword;
+        this.encryptionSalt = encryptionSalt;
+        this.appPassword = appPassword;
+        this.category = category;
+        this.appName = appName;
+        this.appUsername = appUsername;
+        this.appUrl = appUrl;
+        this.appEmail = appEmail;
+        this.appNotes = appNotes;
+        this.passwordState = passwordState;
+        this.isFavourite = isFavourite;
+        this.createdAt = new Timestamp(System.currentTimeMillis()); // Initialize createdAt
+        this.updatedAt = new Timestamp(System.currentTimeMillis()); // Initialize updatedAt
+    }
+
+    // Default Constructor
+    public PasswordModel() {
+    }
 
     // Getters and Setters for each field
     public String getPasswordId() {
@@ -178,24 +222,4 @@ public class PasswordModel {
                 ", updatedAt=" + updatedAt +
                 '}';
     }
-
-    // Example main method for testing (if needed)
-//    public static void main(String[] args) {
-//        PasswordModel password = new PasswordModel();
-//        password.setPasswordId("pass123");
-//        password.setUserId("user123");
-//        password.setEncryptedPassword("encryptedPass");
-//        password.setEncryptionSalt("saltValue");
-//        password.setCategory(Category.WORK); // Example category
-//        password.setAppName("ExampleApp");
-//        password.setAppUsername("exampleUser");
-//        password.setAppUrl("http://example.com");
-//        password.setAppEmail("user@example.com");
-//        password.setAppNotes("Sample notes");
-//        password.setPasswordState("saved");
-//        password.setFavourite(true);
-//        password.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-//        password.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-//        System.out.println(password);
-//    }
 }

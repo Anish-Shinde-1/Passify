@@ -3,6 +3,7 @@ package com.passify.controller;
 import com.passify.model.PasswordDAO;
 import com.passify.model.PasswordModel;
 import com.passify.model.UserModel;
+import com.passify.utils.PasswordGenerator;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
@@ -17,6 +18,9 @@ import java.util.Optional;
 public class EditFormController {
 
     @FXML
+    private Label passwordFormLabel;
+
+    @FXML
     private ChoiceBox<String> appCategoryList;
 
     @FXML
@@ -29,10 +33,13 @@ public class EditFormController {
     private TextField appNotes;
 
     @FXML
-    private TextField appPassword;
+    private TextField appPassword; // Keep it as TextField for visibility
 
     @FXML
     private TextField appUsername;
+
+    @FXML
+    private TextField appUrl;
 
     @FXML
     private Button cancelEditButton;
@@ -59,16 +66,29 @@ public class EditFormController {
         this.connection = connection;
         this.passwordDAO = new PasswordDAO(connection);
         this.currentUser = currentUser;
-        this.parentController = parentController; // Get reference to the parent controller
+        this.parentController = parentController;
 
-        if (currentPassword != null) {
-            setPassword(currentPassword); // Populate fields with existing password data
-        } else {
-            logAndAlert("No password data provided.", null);
-        }
-
-        // Populate the category list from enum values
+        // Populate the category list
         populateCategoryList();
+
+        // Check if currentPassword is null to determine if we're adding or editing
+        if (currentPassword == null) {
+            passwordFormLabel.setText("Add New Password");
+            clearFormFields(); // Clear input fields for a new password entry
+        } else {
+            setPassword(currentPassword); // Populate fields with existing data
+            passwordFormLabel.setText("Edit Password Details");
+        }
+    }
+
+    private void clearFormFields() {
+        appName.clear();
+        appUsername.clear();
+        appPassword.clear(); // Ensure password field is cleared
+        appEmail.clear();
+        appNotes.clear();
+        appUrl.clear(); // Clear URL field
+        appCategoryList.setValue(null);  // Reset the choice box
     }
 
     // Method to populate fields with current password details
@@ -76,9 +96,18 @@ public class EditFormController {
         this.currentPassword = password;
         appName.setText(password.getAppName());
         appUsername.setText(password.getAppUsername());
-        appPassword.setText(password.getEncryptedPassword()); // Consider decrypting the password for display
+
+        // Set the password text for editing (ensure this is not null)
+        String currentAppPassword = password.getAppPassword();
+        if (currentAppPassword != null) {
+            appPassword.setText(currentAppPassword);
+        } else {
+            appPassword.clear(); // Clear field if password is null
+        }
+
         appEmail.setText(password.getAppEmail());
         appNotes.setText(password.getAppNotes());
+        appUrl.setText(password.getAppUrl()); // Set the URL
 
         // Set the category name in the ChoiceBox
         appCategoryList.setValue(password.getCategory().toString());
@@ -91,48 +120,103 @@ public class EditFormController {
         }
     }
 
+    // Handle the action of generating a password
+    @FXML
+    private void handleGeneratePassword() {
+        String generatedPassword = PasswordGenerator.generatePassword(); // Use the utility to generate a password
+        appPassword.setText(generatedPassword); // Set the generated password in the appPassword field
+    }
+
     // Handle the action of saving the edited password details
     @FXML
     private void handleSaveEdit() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirm Save");
-        alert.setHeaderText("Are you sure you want to save the changes?");
-        alert.setContentText("This action will update the password details.");
+        alert.setTitle(currentPassword == null ? "Confirm Add" : "Confirm Save");
+        alert.setHeaderText(currentPassword == null ? "Are you sure you want to add this new password?" : "Are you sure you want to save the changes?");
+        alert.setContentText(currentPassword == null ? "This action will add a new password." : "This action will update the password details.");
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
-                // Gather the updated data from input fields
+                // Gather form data
                 String appNameText = appName.getText();
                 String appCategoryName = appCategoryList.getValue();
+
+                // Validate category selection
+                if (appCategoryName == null || appCategoryName.isEmpty()) {
+                    logAndAlert("Category must be selected.", null);
+                    return; // Exit early if no category is selected
+                }
+
                 PasswordModel.Category appCategory = PasswordModel.Category.valueOf(appCategoryName);
                 String appUsernameText = appUsername.getText();
-                String appPasswordText = appPassword.getText(); // Encrypt the password if necessary
+                String appPasswordText = appPassword.getText(); // Retrieve plain text for encryption
                 String appEmailText = appEmail.getText();
+                String appUrlText = appUrl.getText();
                 String appNotesText = appNotes.getText();
 
-                // Update the currentPassword object
-                currentPassword.setAppName(appNameText);
-                currentPassword.setCategory(appCategory);
-                currentPassword.setAppUsername(appUsernameText);
-                currentPassword.setEncryptedPassword(appPasswordText); // Encrypt if needed
-                currentPassword.setAppEmail(appEmailText);
-                currentPassword.setAppNotes(appNotesText);
+                // Check if the password is empty before processing
+                if (appPasswordText == null || appPasswordText.trim().isEmpty()) {
+                    logAndAlert("Password cannot be empty.", null);
+                    return; // Exit early if the password is empty
+                }
 
-                // Save the changes to the database
-                if (passwordDAO.updatePassword(currentPassword, currentUser)) {
-                    System.out.println("Password details updated successfully.");
-                    navigateBackToPasswordDetails(); // Navigate back to the password details view
+                // Debugging statement to check the password
+                System.out.println("App Password: " + appPasswordText); // Check what the password is
+
+                if (currentPassword == null) {
+                    // Create a new PasswordModel instance
+                    PasswordModel newPassword = new PasswordModel(
+                            currentUser.getUserId(),
+                            null, // Password will be encrypted later
+                            appPasswordText,
+                            null, // Salt will be generated during encryption
+                            appCategory,
+                            appNameText,
+                            appUsernameText,
+                            appUrlText,
+                            appEmailText,
+                            appNotesText,
+                            "saved",
+                            false
+                    );
+
+                    // Add the new password using the DAO
+                    if (passwordDAO.addPassword(newPassword, currentUser)) {
+                        System.out.println("New password added successfully.");
+                        logAndAlert("New password added successfully.", null);
+                        navigateBackToPasswordDetails();
+                    } else {
+                        logAndAlert("Failed to add new password.", null);
+                    }
                 } else {
-                    logAndAlert("Failed to update password details.", null);
+                    // Update the existing password details
+                    currentPassword.setAppName(appNameText);
+                    currentPassword.setCategory(appCategory);
+                    currentPassword.setAppUsername(appUsernameText);
+                    currentPassword.setAppPassword(appPasswordText); // Set plain text for encryption
+                    currentPassword.setAppEmail(appEmailText);
+                    currentPassword.setAppUrl(appUrlText);
+                    currentPassword.setAppNotes(appNotesText);
+
+                    // Update the password using the DAO
+                    if (passwordDAO.updatePassword(currentPassword, currentUser)) {
+                        System.out.println("Password details updated successfully.");
+                        logAndAlert("Password details updated succesfully", null);
+                        navigateBackToPasswordDetails();
+                    } else {
+                        logAndAlert("Failed to update password details.", null);
+                    }
                 }
             } catch (SQLException e) {
-                logAndAlert("An error occurred while updating password details.", e);
+                logAndAlert("An error occurred while saving password details.", e);
             } catch (IllegalArgumentException e) {
                 logAndAlert("Invalid category selected.", e);
             }
         }
     }
+
+
 
     // Handle the action of canceling the edit
     @FXML

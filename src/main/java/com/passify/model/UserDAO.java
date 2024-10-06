@@ -5,6 +5,7 @@ import com.passify.utils.SaltGenerator;
 import com.passify.utils.Encryption;
 
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.*;
@@ -18,11 +19,6 @@ public class UserDAO {
 
     public UserDAO(Connection connection) throws SQLException {
         this.connection = connection;
-    }
-
-    // Generate a new encryption key
-    private SecretKey generateEncryptionKey() throws Exception {
-        return Encryption.generateKey(); // Generate a new secret key
     }
 
     // Create a new user
@@ -41,7 +37,7 @@ public class UserDAO {
         // Generate a new encryption key
         SecretKey secretKey;
         try {
-            secretKey = generateEncryptionKey();
+            secretKey = Encryption.generateKey();
         } catch (Exception e) {
             System.err.println("Error generating encryption key: " + e.getMessage());
             return null; // Return null on failure
@@ -59,7 +55,7 @@ public class UserDAO {
             pstmt.setString(6, Base64.getEncoder().encodeToString(secretKey.getEncoded())); // Store the base64-encoded encryption key
             pstmt.executeUpdate();
 
-            return new UserModel(userId, userName, hashedPassword, hashSalt, userEmail, Base64.getEncoder().encodeToString(secretKey.getEncoded()), new Timestamp(System.currentTimeMillis()), null);
+            return new UserModel(userId, userName, hashedPassword, hashSalt, userEmail, secretKey, new Timestamp(System.currentTimeMillis()), null);
         } catch (SQLException e) {
             System.err.println("Error creating user: " + e.getMessage());
             return null; // Return null on failure
@@ -147,9 +143,18 @@ public class UserDAO {
         String hashedPassword = rs.getString("hashed_password");
         String hashSalt = rs.getString("hash_salt");
         String userEmail = rs.getString("user_email");
-        String encryptionKey = Base64.getEncoder().encodeToString(rs.getBytes("encryption_key")); // Fetch encryption_key and encode it
+        String encryptionKeyString = rs.getString("encryption_key"); // Fetch encryption_key as a string
+        SecretKey encryptionKey = null;
+
+        // Convert the Base64 string to SecretKey
+        if (encryptionKeyString != null) {
+            byte[] decodedKey = Base64.getDecoder().decode(encryptionKeyString);
+            encryptionKey = new SecretKeySpec(decodedKey, 0, decodedKey.length, "AES");
+        }
+
         Timestamp createdAt = rs.getTimestamp("created_at");
         Timestamp updatedAt = rs.getTimestamp("updated_at"); // Get updated_at directly as Timestamp
+
         return new UserModel(userId, userName, hashedPassword, hashSalt, userEmail, encryptionKey, createdAt, updatedAt);
     }
 }

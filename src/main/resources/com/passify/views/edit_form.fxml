@@ -81,17 +81,17 @@
                 </ImageView>
             </graphic>
         </Button>
-        <TextField fx:id="appNotes" alignment="TOP_LEFT" layoutX="60.0" layoutY="520.0" prefHeight="100.0" prefWidth="520.0" style="-fx-text-fill: #FFFFFF; -fx-background-color: #404040;">
+        <TextField fx:id="appNotes" alignment="TOP_LEFT" layoutX="60.0" layoutY="600.0" prefHeight="40.0" prefWidth="520.0" style="-fx-text-fill: #FFFFFF; -fx-background-color: #404040;">
             <font>
                 <Font name="JetBrains Mono Regular" size="16.0" />
             </font>
         </TextField>
-      <Label contentDisplay="TEXT_ONLY" graphicTextGap="0.0" layoutX="44.0" layoutY="34.0" prefHeight="39.0" prefWidth="332.0" text="Edit Password Details" textFill="#b2b2b2">
+      <Label fx:id="passwordFormLabel" contentDisplay="TEXT_ONLY" graphicTextGap="0.0" layoutX="44.0" layoutY="34.0" prefHeight="39.0" prefWidth="332.0" text="Edit Password Details" textFill="#b2b2b2">
          <font>
             <Font name="JetBrains Mono Bold" size="16.0" />
          </font>
       </Label>
-      <Label contentDisplay="TEXT_ONLY" graphicTextGap="0.0" layoutX="70.0" layoutY="490.0" prefHeight="30.0" prefWidth="320.0" text="Notes" textFill="#b2b2b2">
+      <Label contentDisplay="TEXT_ONLY" graphicTextGap="0.0" layoutX="70.0" layoutY="570.0" prefHeight="30.0" prefWidth="320.0" text="Notes" textFill="#b2b2b2">
          <font>
             <Font name="JetBrains Mono Regular" size="14.0" />
          </font>
@@ -126,7 +126,7 @@
             <Font name="JetBrains Mono Regular" size="14.0" />
          </font>
       </Label>
-      <Button fx:id="generatePasswordButton" graphicTextGap="10.0" layoutX="470.0" layoutY="280.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="110.0" style="-fx-background-color: #3b3b3b;" text="Generate" textFill="WHITE">
+      <Button fx:id="generatePasswordButton" graphicTextGap="10.0" layoutX="470.0" layoutY="280.0" mnemonicParsing="false" onAction="#handleGeneratePassword" prefHeight="40.0" prefWidth="110.0" style="-fx-background-color: #3b3b3b;" text="Generate" textFill="WHITE">
          <font>
             <Font name="JetBrains Mono Regular" size="16.0" />
          </font>
@@ -137,6 +137,16 @@
             <Font name="JetBrains Mono Regular" size="16.0" />
          </font>
       </TextField>
+      <TextField fx:id="appUrl" layoutX="60.0" layoutY="520.0" prefHeight="40.0" prefWidth="520.0" style="-fx-text-fill: #FFFFFF; -fx-background-color: #404040;">
+         <font>
+            <Font name="JetBrains Mono Regular" size="16.0" />
+         </font>
+      </TextField>
+      <Label contentDisplay="TEXT_ONLY" graphicTextGap="0.0" layoutX="70.0" layoutY="490.0" prefHeight="30.0" prefWidth="320.0" text="App URL" textFill="#b2b2b2">
+         <font>
+            <Font name="JetBrains Mono Regular" size="14.0" />
+         </font>
+      </Label>
     </children>
     <effect>
         <Blend />

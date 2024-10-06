@@ -6,18 +6,18 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="appCard" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#handleViewDetails" prefHeight="80.0" prefWidth="360.0" style="-fx-background-color: #1E1E1E;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.passify.controller.AppCardController">
+<AnchorPane fx:id="appCard" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#handleViewDetails" prefHeight="60.0" prefWidth="360.0" style="-fx-background-color: #1E1E1E;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.passify.controller.AppCardController">
    <children>
-      <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="14.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="20.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../icons/Connect.png" />
          </image></ImageView>
-      <Label fx:id="appName" layoutX="84.0" layoutY="14.0" prefHeight="32.0" prefWidth="244.0" text="App Name" textFill="WHITE">
+      <Label fx:id="appName" layoutX="75.0" layoutY="6.0" prefHeight="32.0" prefWidth="244.0" text="App Name" textFill="WHITE">
          <font>
             <Font name="JetBrains Mono Bold" size="16.0" />
          </font>
       </Label>
-      <Label fx:id="appUrl" layoutX="84.0" layoutY="40.0" prefHeight="24.0" prefWidth="244.0" text="mail@gmail.com" textFill="#b5b5b5">
+      <Label fx:id="appUrl" layoutX="75.0" layoutY="31.0" prefHeight="24.0" prefWidth="244.0" text="mail@gmail.com" textFill="#b5b5b5">
          <font>
             <Font name="JetBrains Mono Regular" size="12.0" />
          </font>

@@ -51,12 +51,12 @@ public class PasswordGenerator {
         return shuffledString;
     }
 
-//    public static void main(String[] args) {
-//        String generatedPassword = generatePassword();
-//        System.out.println("Generated Password: " + generatedPassword);
-//        String tempString = "0123456789";
-//        System.out.println("Original String : " + tempString);
-//        System.out.println("Shuffled String : " + shuffleString(tempString));
-//    }
+    public static void main(String[] args) {
+        String generatedPassword = generatePassword();
+        System.out.println("Generated Password: " + generatedPassword);
+        String tempString = "0123456789";
+        System.out.println("Original String : " + tempString);
+        System.out.println("Shuffled String : " + shuffleString(tempString));
+    }
 
 }

@@ -175,7 +175,7 @@
                         <Font name="JetBrains Mono Regular" size="16.0" />
                      </font>
                   </Label>
-                  <Button fx:id="signoutButton" alignment="BOTTOM_LEFT" defaultButton="true" graphicTextGap="20.0" layoutX="10.0" layoutY="560.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="320.0" style="-fx-background-color: #282828;" text="Signout" textFill="WHITE">
+                  <Button fx:id="signoutButton" alignment="BOTTOM_LEFT" defaultButton="true" graphicTextGap="20.0" layoutX="10.0" layoutY="560.0" mnemonicParsing="false" onAction="#handleSignOut" prefHeight="50.0" prefWidth="320.0" style="-fx-background-color: #282828;" text="Signout" textFill="WHITE">
                      <font>
                         <Font name="JetBrains Mono Regular" size="16.0" />
                      </font>
@@ -195,7 +195,7 @@
                <top>
                   <Pane prefHeight="60.0" prefWidth="360.0" style="-fx-background-color: #1E1E1E;" BorderPane.alignment="CENTER">
                      <children>
-                        <Button fx:id="addNewPasswordButton" layoutX="278.0" layoutY="14.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="68.0" style="-fx-background-color: #3b3b3b;" text="New" textFill="WHITE">
+                        <Button fx:id="addNewPasswordButton" layoutX="278.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleAddNewPassword" prefHeight="31.0" prefWidth="68.0" style="-fx-background-color: #3b3b3b;" text="New" textFill="WHITE">
                            <font>
                               <Font name="JetBrains Mono Regular" size="16.0" />
                            </font>
