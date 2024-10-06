@@ -1,4 +1,4 @@
-package com.passify.model;
+package com.passify.model.FutureScope;
 
 import java.time.LocalDateTime;
 

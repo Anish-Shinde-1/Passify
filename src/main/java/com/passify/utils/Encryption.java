@@ -24,14 +24,6 @@ public class Encryption {
         return keyGen.generateKey();
     }
 
-    // Derive a Secret Key from a given string
-    public static SecretKey deriveKey(String key) throws Exception {
-        MessageDigest sha = MessageDigest.getInstance("SHA-256");
-        byte[] keyBytes = sha.digest(key.getBytes(StandardCharsets.UTF_8));
-        // Use only the first 32 bytes for AES-256
-        return new SecretKeySpec(Arrays.copyOf(keyBytes, 32), ALGORITHM);
-    }
-
     // Encrypts the given plain text using the provided salt and secret key
     public static String encrypt(String plainText, byte[] salt, SecretKey secretKey) throws Exception {
         if (plainText == null) {

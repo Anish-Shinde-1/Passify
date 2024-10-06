@@ -18,4 +18,5 @@ module com.passify.passify {
     exports com.passify;
     exports com.passify.model;
     exports com.passify.controller;
+    exports com.passify.model.FutureScope;
 }
