@@ -10,8 +10,7 @@ module com.passify.passify {
     requires eu.hansolo.tilesfx;
     requires java.desktop;
     requires java.sql;
-    requires junit;
-    requires mysql.connector.j;
+    requires mysql.connector.j; // Correct module name
 
     opens com.passify to javafx.fxml;
     opens com.passify.controller to javafx.fxml;
@@ -19,6 +18,4 @@ module com.passify.passify {
     exports com.passify;
     exports com.passify.model;
     exports com.passify.controller;
-
-
 }
