@@ -68,14 +68,24 @@ To set up Passify on your local machine, follow these steps:
    ```bash
    cd passify
    ```
+3. **Run the MySQL server script:**
 
-3. **Build the project:**
+      - Navigate to the src/main/java/com/passify/utils/ directory and run the SQL script to set up the database.
+      - Ensure you have a MySQL server running.
+
+
+4. **Update the JDBC connector class:**
+
+      - Open the JDBC_Connector.java file located in src/main/java/com/passify/utils/ and update the server login credentials (username and password) according to your MySQL server settings.
+
+   
+5. **Build the project:**
 
    ```bash
    mvn clean install
    ```
 
-4. **Run the application:**
+6. **Run the application:**
 
    ```bash
    mvn clean javafx:run
