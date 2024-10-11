@@ -90,14 +90,6 @@ To set up Passify on your local machine, follow these steps:
    ```bash
    mvn clean javafx:run
    ```
-   
-## Usage
-
-1. **Login & Registration**: Use the login screen to register and authenticate yourself.
-2. **Manage Passwords**: Access and manage your passwords from the main dashboard.
-3. **Categorize Passwords**: Organize your passwords into categories such as **Work**, **Social**, and **Miscellaneous** for easier access and management.
-4. **Favourites & Trash**: Mark important passwords as favorites for quick access, and move any deleted passwords to the trash for possible recovery later.
-
 
 ## Technologies
 
