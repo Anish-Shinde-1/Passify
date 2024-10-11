@@ -52,6 +52,7 @@ Although the Minimum Viable Product (MVP) of Passify is complete, the applicatio
 - **Trash**: Adding a trash feature to list and recover deleted passwords.
 - **Types**: Categorizing credentials by type, including login credentials, card details, identity documents, etc.
 - **User Dashboard**: Creating a user dashboard for better usability and additional features.
+- **Automatic Database Setup**: Streamlining the database setup process to allow users to set up the database automatically without needing to run SQL scripts manually.
 
 ## Installation
 
