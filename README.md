@@ -10,17 +10,14 @@
 
 ## Table of Contents
 
-- [Features](#features)
-- [Workings](#workings)
 - [Functionality](#functionality)
+- [Workings](#workings)
 - [Project Status](#project-status)
 - [Installation](#installation)
-- [Usage](#usage)
 - [Technologies](#technologies)
-- [Contributing](#contributing)
 - [License](#license)
 
-## Features & Functionality
+## Functionality
 
 **Passify** provides essential features for secure password management:
 
