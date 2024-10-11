@@ -20,11 +20,19 @@
 - [Contributing](#contributing)
 - [License](#license)
 
-## Features
+## Features & Functionality
 
-- **User Authentication**: Secure login and user management to protect your sensitive data.
-- **Password Storage**: Safely store and manage your passwords with encryption.
-- **Intuitive UI**: User-friendly interface designed with JavaFX and Scene Builder for easy navigation.
+**Passify** provides essential features for secure password management:
+
+- **User Authentication**: Secure login with master passwords, which are hashed for protection.
+- **Password Management**: Add, update, and delete passwords, all securely salted and encrypted with AES.
+- **Data Security**: Utilizes PBKDF2 hashing with salting for master passwords, ensuring robust protection.
+- **Intuitive UI**: User-friendly interface designed with JavaFX for easy navigation.
+- **Categorization**: Organize passwords into **Work**, **Social**, and **Miscellaneous** categories.
+- **Favorites & Trash**: Mark passwords as favorites for quick access and recover deleted passwords from trash.
+- **Password Generator**: Create strong, secure passwords with the built-in generator.
+- **User Dashboard**: An overview dashboard for efficient management of user settings and preferences.
+
 
 ## Workings
 
@@ -34,15 +42,6 @@ Passify operates on a simple model-view-controller (MVC) architecture with an ad
 2. **View**: The JavaFX UI components that the user interacts with.
 3. **Controller**: Handles user input and updates the model and view accordingly.
 4. **DAO**: Provides an abstract interface to the database, managing the CRUD operations for user accounts and password entries. 
-
-## Functionality
-
-The core functionality of Passify includes:
-
-- **Secure User Login**: Users can authenticate themselves using a master password.
-- **Password Management**: Users can add, update, and delete password entries securely.
-- **Data Encryption**: All sensitive data is encrypted to ensure user privacy.
-- **User Dashboard**: An intuitive dashboard allows users to view and manage their saved passwords efficiently.
 
 ## Project Status
 
