@@ -10,9 +10,19 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Data Access Object (DAO) for managing password entries in the database.
+ * This class provides methods to add, retrieve, update, trash, and delete passwords securely.
+ */
 public class PasswordDAO {
     private final Connection connection;
 
+    /**
+     * Constructs a PasswordDAO with the specified database connection.
+     *
+     * @param connection the database connection to be used for password operations.
+     * @throws SQLException if the connection is null or an SQL error occurs.
+     */
     public PasswordDAO(Connection connection) throws SQLException {
         this.connection = connection;
 
@@ -21,7 +31,14 @@ public class PasswordDAO {
         }
     }
 
-    // Create a new password entry
+    /**
+     * Creates a new password entry in the database.
+     *
+     * @param password the PasswordModel containing the password details.
+     * @param user     the UserModel containing the user's encryption key.
+     * @return true if the password entry was added successfully; false otherwise.
+     * @throws SQLException if an SQL error occurs during the operation.
+     */
     public boolean addPassword(PasswordModel password, UserModel user) throws SQLException {
         // Generate salt for encryption
         byte[] encryptionSalt = SaltGenerator.generateSalt();
@@ -67,7 +84,14 @@ public class PasswordDAO {
         }
     }
 
-    // Retrieve a password by its ID (returns Optional)
+    /**
+     * Retrieves a password by its ID for a specific user.
+     *
+     * @param passwordId the unique identifier of the password.
+     * @param user       the UserModel containing the user's encryption key.
+     * @return an Optional containing the PasswordModel if found; empty otherwise.
+     * @throws SQLException if an SQL error occurs during the operation.
+     */
     public Optional<PasswordModel> getPasswordById(String passwordId, UserModel user) throws SQLException {
         String sql = "SELECT * FROM Password WHERE password_id = ?";
 
@@ -95,7 +119,13 @@ public class PasswordDAO {
         return Optional.empty();
     }
 
-    // Retrieve all passwords for a user (returns Optional<List<PasswordModel>>)
+    /**
+     * Retrieves all passwords for a specific user.
+     *
+     * @param userId the unique identifier of the user.
+     * @return an Optional containing a list of PasswordModel if found; empty otherwise.
+     * @throws SQLException if an SQL error occurs during the operation.
+     */
     public Optional<List<PasswordModel>> getAllPasswordsForUser(String userId) throws SQLException {
         String sql = "SELECT * FROM Password WHERE user_id = ? AND password_state = 'saved'";
         List<PasswordModel> passwords = new ArrayList<>();
@@ -115,7 +145,14 @@ public class PasswordDAO {
         return passwords.isEmpty() ? Optional.empty() : Optional.of(passwords);
     }
 
-    // Update a password entry
+    /**
+     * Updates an existing password entry in the database.
+     *
+     * @param password the PasswordModel containing the updated password details.
+     * @param user     the UserModel containing the user's encryption key.
+     * @return true if the password entry was updated successfully; false otherwise.
+     * @throws SQLException if an SQL error occurs during the operation.
+     */
     public boolean updatePassword(PasswordModel password, UserModel user) throws SQLException {
         String encryptedPassword;
         // Retrieve the existing salt from the database first
@@ -165,7 +202,13 @@ public class PasswordDAO {
         }
     }
 
-    // Helper method to get existing salt from database
+    /**
+     * Retrieves the existing salt for a password entry.
+     *
+     * @param passwordId the unique identifier of the password.
+     * @return the encryption salt if found; null otherwise.
+     * @throws SQLException if an SQL error occurs during the operation.
+     */
     private String getExistingSalt(String passwordId) throws SQLException {
         String sql = "SELECT encryption_salt FROM Password WHERE password_id = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -179,7 +222,13 @@ public class PasswordDAO {
         return null; // Return null if no salt is found
     }
 
-    // Move password to trash (soft delete)
+    /**
+     * Moves a password entry to the trash (soft delete).
+     *
+     * @param passwordId the unique identifier of the password to be trashed.
+     * @return true if the password entry was trashed successfully; false otherwise.
+     * @throws SQLException if an SQL error occurs during the operation.
+     */
     public boolean trashPassword(String passwordId) throws SQLException {
         String sql = "UPDATE Password SET password_state = 'trashed', updated_at = CURRENT_TIMESTAMP WHERE password_id = ?";
 
@@ -189,7 +238,13 @@ public class PasswordDAO {
         }
     }
 
-    // Delete a password entry permanently
+    /**
+     * Deletes a password entry permanently from the database.
+     *
+     * @param passwordId the unique identifier of the password to be deleted.
+     * @return true if the password entry was deleted successfully; false otherwise.
+     * @throws SQLException if an SQL error occurs during the operation.
+     */
     public boolean deletePassword(String passwordId) throws SQLException {
         String sql = "DELETE FROM Password WHERE password_id = ?";
 
@@ -199,7 +254,13 @@ public class PasswordDAO {
         }
     }
 
-    // Helper function to map a result set row to a PasswordModel object
+    /**
+     * Helper function to map a result set row to a PasswordModel object.
+     *
+     * @param resultSet the ResultSet containing password data from the database.
+     * @return the mapped PasswordModel object.
+     * @throws SQLException if an SQL error occurs while retrieving data from the result set.
+     */
     private PasswordModel mapResultSetToPasswordModel(ResultSet resultSet) throws SQLException {
         PasswordModel password = new PasswordModel();
 

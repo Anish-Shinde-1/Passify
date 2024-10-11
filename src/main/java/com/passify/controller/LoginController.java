@@ -18,6 +18,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Optional;
 
+/**
+ * The LoginController class handles user login and registration functionalities.
+ * It manages the interactions between the user interface and the UserDAO for user-related operations.
+ */
 public class LoginController {
 
     @FXML
@@ -30,7 +34,7 @@ public class LoginController {
     private PasswordField masterPassword;
 
     @FXML
-    private PasswordField reEnteredMasterPassword; // This will be used for re-entering the password during login
+    private PasswordField reEnteredMasterPassword; // Used for re-entering the password during login
 
     @FXML
     private Button registerButton;
@@ -42,9 +46,12 @@ public class LoginController {
     private TextField userName;
 
     private UserDAO userDAO;
-    private Connection connection; // Add a connection variable
+    private Connection connection; // Database connection variable
 
-    // Initialize the controller with a database connection
+    /**
+     * Initializes the LoginController with a database connection.
+     * This constructor attempts to create a connection to the database and initializes UserDAO.
+     */
     public LoginController() {
         try {
             Connection connection = JDBC_Connector.getConnection();
@@ -55,12 +62,22 @@ public class LoginController {
         }
     }
 
+    /**
+     * Sets the database connection and initializes the UserDAO.
+     *
+     * @param connection the Connection object to be set for database operations.
+     * @throws SQLException if an error occurs while initializing UserDAO with the provided connection.
+     */
     public void setConnection(Connection connection) throws SQLException {
         this.connection = connection; // Set the connection
         this.userDAO = new UserDAO(connection); // Initialize UserDAO with the provided connection
     }
 
-    // Method to handle login
+    /**
+     * Handles the login action when the login button is pressed.
+     *
+     * @param event the ActionEvent triggered by pressing the login button.
+     */
     @FXML
     private void handleLogin(ActionEvent event) {
         System.out.println("Login button pressed."); // Debug statement
@@ -70,6 +87,7 @@ public class LoginController {
         String password = masterPassword.getText();
         String reEnteredPassword = reEnteredMasterPassword.getText(); // Get the re-entered password
 
+        // Validate input fields
         if (username.isEmpty() || email.isEmpty() || password.isEmpty() || reEnteredPassword.isEmpty()) {
             alertLabel.setText("Please fill in all fields.");
             return;
@@ -107,7 +125,11 @@ public class LoginController {
         }
     }
 
-    // Method to handle registration
+    /**
+     * Handles the registration action when the register button is pressed.
+     *
+     * @param event the ActionEvent triggered by pressing the register button.
+     */
     @FXML
     private void handleRegister(ActionEvent event) {
         System.out.println("Register button pressed."); // Debug statement
@@ -116,6 +138,7 @@ public class LoginController {
         String confirmPassword = reEnteredMasterPassword.getText();
         String email = userEmail.getText().trim();
 
+        // Validate input fields
         if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || email.isEmpty()) {
             alertLabel.setText("Please fill in all fields.");
             return;
@@ -146,7 +169,9 @@ public class LoginController {
         }
     }
 
-    // Method to clear input fields after successful registration
+    /**
+     * Clears the input fields after successful registration.
+     */
     private void clearFields() {
         userName.clear();
         masterPassword.clear();
@@ -155,33 +180,11 @@ public class LoginController {
         alertLabel.setText(""); // Clear alert messages
     }
 
-    // Method to switch to the main application scene
-//    private void switchToMainScene(String email) {
-//        try {
-//            Optional<UserModel> userOpt = userDAO.getUserByEmail(email);
-//            if (userOpt.isPresent()) {
-//                UserModel user = userOpt.get(); // Get the UserModel instance
-//                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/passify/views/main.fxml"));
-//                Parent mainView = loader.load();
-//
-//                // Get the controller and initialize it
-//                MainController mainController = loader.getController();
-//                Connection connection = JDBC_Connector.getConnection(); // Get a new connection
-//                mainController.initializeDependencies(connection, user); // Pass the UserModel instance
-//
-//                Scene mainScene = new Scene(mainView);
-//                Stage currentStage = (Stage) loginButton.getScene().getWindow();
-//                currentStage.setScene(mainScene);
-//                currentStage.show();
-//                System.out.println("Switched to main scene for user: " + email); // Debug statement
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();  // Print full stack trace for debugging
-//            alertLabel.setText("Error loading main screen: " + e.getMessage());
-//            System.err.println("Exception loading main screen: " + e.getMessage()); // Debug statement
-//        }
-//    }
-
+    /**
+     * Switches the scene to the main application view after a successful login.
+     *
+     * @param userId the unique identifier of the user to be passed to the main application.
+     */
     private void switchToMainScene(String userId) {
         try {
             // Fetch the user by ID and handle the Optional<UserModel>
@@ -213,7 +216,7 @@ public class LoginController {
                 Stage currentStage = (Stage) loginButton.getScene().getWindow();
                 currentStage.setScene(mainScene);
                 currentStage.show();
-                System.out.println("Switched to main scene for user: " + user.getUserName()); // Use user.getUserName() to show the logged in user
+                System.out.println("Switched to main scene for user: " + user.getUserName()); // Show the logged-in user
             } else {
                 System.err.println("User not found in the database: " + userId); // Debug statement
             }
@@ -223,6 +226,4 @@ public class LoginController {
             System.err.println("Exception loading main screen: " + e.getMessage()); // Debug statement
         }
     }
-
-
 }

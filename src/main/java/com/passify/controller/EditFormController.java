@@ -15,72 +15,87 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Optional;
 
+/**
+ * Controller for editing password entries in the application.
+ * This class handles the functionality to add or edit password details,
+ * including form validation and data management.
+ */
 public class EditFormController {
 
     @FXML
-    private Label passwordFormLabel;
+    private Label passwordFormLabel; // Label to display the form title
 
     @FXML
-    private ChoiceBox<String> appCategoryList;
+    private ChoiceBox<String> appCategoryList; // Dropdown for selecting application categories
 
     @FXML
-    private TextField appEmail;
+    private TextField appEmail; // TextField for the application's email
 
     @FXML
-    private TextField appName;
+    private TextField appName; // TextField for the application's name
 
     @FXML
-    private TextField appNotes;
+    private TextField appNotes; // TextField for additional notes related to the password
 
     @FXML
-    private TextField appPassword; // Keep it as TextField for visibility
+    private TextField appPassword; // TextField for the application's password (visible for editing)
 
     @FXML
-    private TextField appUsername;
+    private TextField appUsername; // TextField for the application's username
 
     @FXML
-    private TextField appUrl;
+    private TextField appUrl; // TextField for the application's URL
 
     @FXML
-    private Button cancelEditButton;
+    private Button cancelEditButton; // Button to cancel the edit operation
 
     @FXML
-    private Pane editPasswordPanel;
+    private Pane editPasswordPanel; // Panel containing the edit password form
 
     @FXML
-    private Button generatePasswordButton;
+    private Button generatePasswordButton; // Button to generate a random password
 
     @FXML
-    private Button saveEditButton;
+    private Button saveEditButton; // Button to save the edited password details
 
-    private PasswordModel currentPassword;
-    private PasswordDAO passwordDAO;
-    private Connection connection;
-    private UserModel currentUser;
+    private PasswordModel currentPassword; // The password being edited or added
+    private PasswordDAO passwordDAO; // Data access object for managing password data
+    private Connection connection; // Database connection
+    private UserModel currentUser; // Currently logged-in user
 
     // Reference to the parent controller (e.g., MainController)
     private MainController parentController;
 
-    // Initialize method to set up the controller with dependencies
+    /**
+     * Initializes the EditFormController with the necessary data and sets up the UI.
+     *
+     * @param connection the database connection
+     * @param currentPassword the PasswordModel representing the current password being edited (or null for adding a new one)
+     * @param currentUser the UserModel representing the currently logged-in user
+     * @param parentController the MainController for navigating back to password details
+     * @throws SQLException if a database access error occurs
+     */
     public void initialize(Connection connection, PasswordModel currentPassword, UserModel currentUser, MainController parentController) throws SQLException {
-        this.connection = connection;
-        this.passwordDAO = new PasswordDAO(connection);
-        this.currentUser = currentUser;
-        this.parentController = parentController;
+        this.connection = connection; // Store the database connection
+        this.passwordDAO = new PasswordDAO(connection); // Initialize the PasswordDAO
+        this.currentUser = currentUser; // Store the current user
+        this.parentController = parentController; // Store the parent controller reference
 
-        // Populate the category list
-        populateCategoryList();
+        populateCategoryList(); // Populate the category list
 
         // Check if currentPassword is null to determine if we're adding or editing
         if (currentPassword == null) {
-            passwordFormLabel.setText("Add New Password");
+            passwordFormLabel.setText("Add New Password"); // Set form title for adding a new password
             clearFormFields(); // Clear input fields for a new password entry
         } else {
             setPassword(currentPassword); // Populate fields with existing data
-            passwordFormLabel.setText("Edit Password Details");
+            passwordFormLabel.setText("Edit Password Details"); // Set form title for editing an existing password
         }
     }
 
+    /**
+     * Clears all form fields for new password entry.
+     */
     private void clearFormFields() {
         appName.clear();
         appUsername.clear();
@@ -88,19 +103,23 @@ public class EditFormController {
         appEmail.clear();
         appNotes.clear();
         appUrl.clear(); // Clear URL field
-        appCategoryList.setValue(null);  // Reset the choice box
+        appCategoryList.setValue(null); // Reset the choice box
     }
 
-    // Method to populate fields with current password details
+    /**
+     * Populates the UI fields with the details of the given PasswordModel.
+     *
+     * @param password the PasswordModel containing password details
+     */
     public void setPassword(PasswordModel password) {
-        this.currentPassword = password;
+        this.currentPassword = password; // Store the current password
         appName.setText(password.getAppName());
         appUsername.setText(password.getAppUsername());
 
         // Set the password text for editing (ensure this is not null)
         String currentAppPassword = password.getAppPassword();
         if (currentAppPassword != null) {
-            appPassword.setText(currentAppPassword);
+            appPassword.setText(currentAppPassword); // Populate password field
         } else {
             appPassword.clear(); // Clear field if password is null
         }
@@ -113,23 +132,30 @@ public class EditFormController {
         appCategoryList.setValue(password.getCategory().toString());
     }
 
-    // Method to populate the category ChoiceBox with enum values
+    /**
+     * Populates the category ChoiceBox with available category options.
+     */
     private void populateCategoryList() {
         for (PasswordModel.Category category : PasswordModel.Category.values()) {
             appCategoryList.getItems().add(category.toString()); // Add categories to the ChoiceBox
         }
     }
 
-    // Handle the action of generating a password
+    /**
+     * Generates a random password and sets it in the password field.
+     */
     @FXML
     private void handleGeneratePassword() {
-        String generatedPassword = PasswordGenerator.generatePassword(); // Use the utility to generate a password
+        String generatedPassword = PasswordGenerator.generatePassword(); // Generate a random password
         appPassword.setText(generatedPassword); // Set the generated password in the appPassword field
     }
 
-    // Handle the action of saving the edited password details
+    /**
+     * Handles the action of saving the edited password details.
+     */
     @FXML
     private void handleSaveEdit() {
+        // Confirm action with the user
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(currentPassword == null ? "Confirm Add" : "Confirm Save");
         alert.setHeaderText(currentPassword == null ? "Are you sure you want to add this new password?" : "Are you sure you want to save the changes?");
@@ -165,7 +191,7 @@ public class EditFormController {
                 System.out.println("App Password: " + appPasswordText); // Check what the password is
 
                 if (currentPassword == null) {
-                    // Create a new PasswordModel instance
+                    // Create a new PasswordModel instance for adding
                     PasswordModel newPassword = new PasswordModel(
                             currentUser.getUserId(),
                             null, // Password will be encrypted later
@@ -185,7 +211,7 @@ public class EditFormController {
                     if (passwordDAO.addPassword(newPassword, currentUser)) {
                         System.out.println("New password added successfully.");
                         logAndAlert("New password added successfully.", null);
-                        navigateBackToPasswordDetails();
+                        navigateBackToPasswordDetails(); // Navigate back to password details
                     } else {
                         logAndAlert("Failed to add new password.", null);
                     }
@@ -202,8 +228,8 @@ public class EditFormController {
                     // Update the password using the DAO
                     if (passwordDAO.updatePassword(currentPassword, currentUser)) {
                         System.out.println("Password details updated successfully.");
-                        logAndAlert("Password details updated succesfully", null);
-                        navigateBackToPasswordDetails();
+                        logAndAlert("Password details updated successfully", null);
+                        navigateBackToPasswordDetails(); // Navigate back to password details
                     } else {
                         logAndAlert("Failed to update password details.", null);
                     }
@@ -216,9 +242,9 @@ public class EditFormController {
         }
     }
 
-
-
-    // Handle the action of canceling the edit
+    /**
+     * Handles the action of canceling the edit operation.
+     */
     @FXML
     private void handleCancelEdit() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -232,7 +258,9 @@ public class EditFormController {
         }
     }
 
-    // Navigate back to PasswordDetailsController within the same page holder
+    /**
+     * Navigates back to the PasswordDetailsController within the same page holder.
+     */
     private void navigateBackToPasswordDetails() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/passify/views/password_details.fxml"));
@@ -249,11 +277,16 @@ public class EditFormController {
         }
     }
 
-    // Helper method to log and display errors in UI
+    /**
+     * Logs an error message and displays an alert with the error details.
+     *
+     * @param message the message to log and display
+     * @param e the exception that occurred (can be null)
+     */
     private void logAndAlert(String message, Exception e) {
-        System.out.println(message);
+        System.out.println(message); // Log the error message
         if (e != null) {
-            e.printStackTrace();
+            e.printStackTrace(); // Print stack trace for debugging
         }
 
         // Show an error dialog to the user
@@ -261,8 +294,8 @@ public class EditFormController {
         alert.setTitle("Error");
         alert.setHeaderText(message);
         if (e != null) {
-            alert.setContentText(e.getMessage());
+            alert.setContentText(e.getMessage()); // Show exception message
         }
-        alert.showAndWait();
+        alert.showAndWait(); // Wait for user to acknowledge the alert
     }
 }

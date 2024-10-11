@@ -11,6 +11,9 @@
 ## Table of Contents
 
 - [Features](#features)
+- [Workings](#workings)
+- [Functionality](#functionality)
+- [Project Status](#project-status)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Technologies](#technologies)
@@ -22,6 +25,33 @@
 - **User Authentication**: Secure login and user management to protect your sensitive data.
 - **Password Storage**: Safely store and manage your passwords with encryption.
 - **Intuitive UI**: User-friendly interface designed with JavaFX and Scene Builder for easy navigation.
+
+## Workings
+
+Passify operates on a simple model-view-controller (MVC) architecture with an additional Data Access Object (DAO) layer. The application interacts with a MySQL database through JDBC for user data storage and retrieval. The user interface is built using JavaFX, allowing for a responsive and modern design. The following components work together:
+
+1. **Model**: Represents the data and the business logic. This includes user accounts and password entries.
+2. **View**: The JavaFX UI components that the user interacts with.
+3. **Controller**: Handles user input and updates the model and view accordingly.
+4. **DAO**: Provides an abstract interface to the database, managing the CRUD operations for user accounts and password entries. 
+
+## Functionality
+
+The core functionality of Passify includes:
+
+- **Secure User Login**: Users can authenticate themselves using a master password.
+- **Password Management**: Users can add, update, and delete password entries securely.
+- **Data Encryption**: All sensitive data is encrypted to ensure user privacy.
+- **User Dashboard**: An intuitive dashboard allows users to view and manage their saved passwords efficiently.
+
+## Project Status
+
+Although the Minimum Viable Product (MVP) of Passify is complete, the application is still a work in progress. Future updates will address the following issues:
+
+- **Favorites**: Implementing a feature to mark passwords as favorites for quick access from the main navigation.
+- **Trash**: Adding a trash feature to list and recover deleted passwords.
+- **Types**: Categorizing credentials by type, including login credentials, card details, identity documents, etc.
+- **User Dashboard**: Creating a user dashboard for better usability and additional features.
 
 ## Installation
 
@@ -48,13 +78,16 @@ To set up Passify on your local machine, follow these steps:
 4. **Run the application:**
 
    ```bash
-   mvn javafx:run
+   mvn clean javafx:run
    ```
-
+   
 ## Usage
 
-1. **Login**: Use the login screen to authenticate yourself.
+1. **Login & Registration**: Use the login screen to register and authenticate yourself.
 2. **Manage Passwords**: Access and manage your passwords from the main dashboard.
+3. **Categorize Passwords**: Organize your passwords into categories such as **Work**, **Social**, and **Miscellaneous** for easier access and management.
+4. **Favourites & Trash**: Mark important passwords as favorites for quick access, and move any deleted passwords to the trash for possible recovery later.
+
 
 ## Technologies
 

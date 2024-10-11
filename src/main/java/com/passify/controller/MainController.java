@@ -6,13 +6,13 @@ import com.passify.model.UserModel;
 import com.passify.utils.JDBC_Connector;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -21,6 +21,12 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Controller for the main application view.
+ * This class handles user interactions in the main scene,
+ * including loading and displaying passwords by category,
+ * adding new passwords, and managing user sessions.
+ */
 public class MainController {
 
     @FXML
@@ -30,7 +36,7 @@ public class MainController {
     @FXML
     private Button all_itemsButton;
     @FXML
-    private VBox appListHolder;
+    private VBox appListHolder; // Holds the list of password entries
     @FXML
     private Button cardTypeButton;
     @FXML
@@ -40,15 +46,15 @@ public class MainController {
     @FXML
     private Button loginTypeButton;
     @FXML
-    private BorderPane mainBorderPane;
+    private BorderPane mainBorderPane; // Main layout for the application
     @FXML
     private Button miscCategoryButton;
     @FXML
-    private VBox navigationPanel;
+    private VBox navigationPanel; // Panel for navigation buttons
     @FXML
-    private VBox pageHolder;
+    private VBox pageHolder; // Container for displaying detailed views
     @FXML
-    private TextField searchBar;
+    private TextField searchBar; // Search bar for filtering passwords
     @FXML
     private Button signoutButton;
     @FXML
@@ -60,20 +66,30 @@ public class MainController {
 
     private PasswordDAO passwordDAO; // Instance for accessing password data
     private String userId; // User ID for fetching passwords
-    private Connection connection;
-    private UserModel currentUser;
+    private Connection connection; // Database connection
+    private UserModel currentUser; // Current logged-in user
+
     // No-argument constructor for FXML
     public MainController() {
     }
 
-    // Constructor to initialize PasswordDAO
+    /**
+     * Initializes the controller with the provided database connection and user model.
+     *
+     * @param connection the database connection
+     * @param user the currently logged-in user
+     * @throws SQLException if a database access error occurs
+     */
     public void initializeDependencies(Connection connection, UserModel user) throws SQLException {
-        this.currentUser = user;
-        this.connection = connection;
+        this.currentUser = user; // Store the current user
+        this.connection = connection; // Set the database connection
         this.userId = user.getUserId(); // Get user ID from UserModel
         this.passwordDAO = new PasswordDAO(connection); // Initialize PasswordDAO with the DB connection
     }
 
+    /**
+     * Initializes the controller. This method sets up action listeners for buttons.
+     */
     @FXML
     public void initialize() {
         // Initialize buttons with action listeners
@@ -83,35 +99,53 @@ public class MainController {
         miscCategoryButton.setOnAction(this::loadMiscPasswords);
     }
 
-    // Load all passwords
+    /**
+     * Loads all saved passwords when the all_itemsButton is clicked.
+     *
+     * @param event the ActionEvent triggered by the button click
+     */
     @FXML
     private void loadAllPasswords(ActionEvent event) {
         System.out.println("All Items button clicked.");
         loadAllSavedPasswords(); // Load all saved passwords directly
     }
 
-    // Load work passwords
+    /**
+     * Loads passwords categorized as work when the workCategoryButton is clicked.
+     *
+     * @param event the ActionEvent triggered by the button click
+     */
     @FXML
     private void loadWorkPasswords(ActionEvent event) {
         System.out.println("Work Category button clicked.");
         loadPasswordsByCategory(PasswordModel.Category.WORK); // Load passwords by category enum
     }
 
-    // Load social passwords
+    /**
+     * Loads passwords categorized as social when the socialCategoryButton is clicked.
+     *
+     * @param event the ActionEvent triggered by the button click
+     */
     @FXML
     private void loadSocialPasswords(ActionEvent event) {
         System.out.println("Social Category button clicked.");
         loadPasswordsByCategory(PasswordModel.Category.SOCIAL); // Load passwords by category enum
     }
 
-    // Load miscellaneous passwords
+    /**
+     * Loads passwords categorized as miscellaneous when the miscCategoryButton is clicked.
+     *
+     * @param event the ActionEvent triggered by the button click
+     */
     @FXML
     private void loadMiscPasswords(ActionEvent event) {
         System.out.println("Miscellaneous Category button clicked.");
         loadPasswordsByCategory(PasswordModel.Category.MISC); // Load passwords by category enum
     }
 
-    // Helper method to load all saved passwords
+    /**
+     * Loads and displays all saved passwords for the current user.
+     */
     private void loadAllSavedPasswords() {
         try {
             Optional<List<PasswordModel>> passwordsOpt = passwordDAO.getAllPasswordsForUser(userId); // Get all passwords
@@ -129,7 +163,11 @@ public class MainController {
         }
     }
 
-    // Helper method to load passwords by category
+    /**
+     * Loads and displays passwords filtered by the specified category.
+     *
+     * @param category the category to filter passwords by
+     */
     private void loadPasswordsByCategory(PasswordModel.Category category) {
         System.out.printf("Loading passwords for category: %s%n", category);
         try {
@@ -153,7 +191,11 @@ public class MainController {
         }
     }
 
-    // Method to display passwords in the appListHolder
+    /**
+     * Displays the provided list of passwords in the appListHolder.
+     *
+     * @param passwords the list of PasswordModel objects to display
+     */
     private void displayPasswords(List<PasswordModel> passwords) {
         appListHolder.getChildren().clear(); // Clear existing items
         for (PasswordModel password : passwords) {
@@ -175,7 +217,11 @@ public class MainController {
         System.out.println("Displayed passwords in the appListHolder.");
     }
 
-
+    /**
+     * Loads the details of a selected password for viewing or editing.
+     *
+     * @param password the PasswordModel object whose details are to be loaded
+     */
     public void loadPasswordDetails(PasswordModel password) {
         try {
             // Load the password_details.fxml
@@ -203,15 +249,28 @@ public class MainController {
         }
     }
 
+    /**
+     * Retrieves the VBox that holds the page content.
+     *
+     * @return the VBox that holds the page content
+     */
     public VBox getPageHolder() {
         return pageHolder;
     }
 
+    /**
+     * Sets the content of the pageHolder to the specified Parent content.
+     *
+     * @param content the new content to display in the pageHolder
+     */
     public void setPageHolderContent(Parent content) {
         pageHolder.getChildren().clear(); // Clear any existing content
         pageHolder.getChildren().add(content); // Add the new content to the pageHolder
     }
 
+    /**
+     * Handles the action of adding a new password.
+     */
     @FXML
     private void handleAddNewPassword() {
         try {
@@ -234,13 +293,20 @@ public class MainController {
         }
     }
 
+    /**
+     * Handles the action of signing out the current user.
+     *
+     * @param event the ActionEvent triggered by the button click
+     */
     @FXML
     private void handleSignOut(ActionEvent event) {
         System.out.println("Sign out button clicked.");
         signOut(); // Call the sign-out method
     }
 
-    // Method to handle sign-out logic
+    /**
+     * Signs out the current user and loads the login screen.
+     */
     private void signOut() {
         try {
             // Load the login screen (login_screen.fxml)
