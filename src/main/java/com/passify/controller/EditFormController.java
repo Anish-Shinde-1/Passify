@@ -210,7 +210,7 @@ public class EditFormController {
                     // Add the new password using the DAO
                     if (passwordDAO.addPassword(newPassword, currentUser)) {
                         System.out.println("New password added successfully.");
-                        logAndAlert("New password added successfully.", null);
+                        logAndAlertSuccess("New password added successfully.");
                         navigateBackToPasswordDetails(); // Navigate back to password details
                     } else {
                         logAndAlert("Failed to add new password.", null);
@@ -228,7 +228,7 @@ public class EditFormController {
                     // Update the password using the DAO
                     if (passwordDAO.updatePassword(currentPassword, currentUser)) {
                         System.out.println("Password details updated successfully.");
-                        logAndAlert("Password details updated successfully", null);
+                        logAndAlertSuccess("Password details updated successfully");
                         navigateBackToPasswordDetails(); // Navigate back to password details
                     } else {
                         logAndAlert("Failed to update password details.", null);
@@ -296,6 +296,21 @@ public class EditFormController {
         if (e != null) {
             alert.setContentText(e.getMessage()); // Show exception message
         }
+        alert.showAndWait(); // Wait for user to acknowledge the alert
+    }
+
+    /**
+     * Logs a success message and displays a success alert with the success details.
+     *
+     * @param message the success message to log and display
+     */
+    private void logAndAlertSuccess(String message) {
+        System.out.println(message); // Log the success message
+
+        // Show a success dialog to the user
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Success");
+        alert.setHeaderText(message);
         alert.showAndWait(); // Wait for user to acknowledge the alert
     }
 }
