@@ -54,35 +54,68 @@ Although the Minimum Viable Product (MVP) of Passify is complete, the applicatio
 
 To set up Passify on your local machine, follow these steps:
 
-1. **Clone the repository:**
+1. **Install MySQL:** *(Skip if you already have installed and setup MySQL)*
+
+   - **Windows**: Download the installer from the [MySQL website](https://dev.mysql.com/downloads/installer/) and follow the installation instructions.
+   - **Linux**: 
+     ```bash
+     sudo apt install mysql-server
+     ```
+   - **Post-Installation**: Secure the installation:
+     ```bash
+     sudo mysql_secure_installation
+     ```
+
+2. **Clone the repository:**
 
    ```bash
    git clone https://github.com/Anish-Shinde-1/Passify.git
    ```
 
-2. **Navigate to the project directory:**
+3. **Navigate to the project directory:**
 
    ```bash
    cd passify
    ```
-3. **Run the MySQL server script:**
+4. **Run the MySQL database setup script:**
 
-      - Navigate to the src/main/java/com/passify/utils/ directory and run the SQL script to set up the database.
-      - Ensure you have a MySQL server running.
-
-
-4. **Update the JDBC connector class:**
-
-      - Open the JDBC_Connector.java file located in src/main/java/com/passify/utils/ and update the server login credentials (username and password) according to your MySQL server settings.
-
+      - Navigate to the src/main/java/com/passify/utils/PasswordManagerDatabaseScript.sql to copy its path and run the SQL script to set up the database.
+   ```bash
+   # For Linux:
+   mysql -u <your_username> -p < /path/to/PasswordManagerDatabaseScript.sql
    
-5. **Build the project:**
+   # For Windows:
+   mysql -u <your_username> -p < "C:\\path\\to\\PasswordManagerDatabaseScript.sql"
+   ```
+   
+5. **Update the JDBC connector class:**
+
+      - Open the JDBC_Connector.java file located in src/main/java/com/passify/utils/ and update the server login credentials (USER and PASSWORD) according to your MySQL server settings.
+
+
+6. **Install Apache Maven:**
+      - For Linux:
+   ```bash
+   sudo apt install maven
+   ```
+   - For Windows:
+     - a. Manual Install: Visit the Maven Download page (https://maven.apache.org/download.cgi) and follow the instructions.
+     - b. Using Scoop or Chocolatey:
+         ```bash 
+         # Using Scoop:
+         scoop install maven
+       
+         # Using Chocolatey:
+         choco install maven
+         ```
+   
+7. **Build the project:**
 
    ```bash
    mvn clean install
    ```
 
-6. **Run the application:**
+8. **Run the application:**
 
    ```bash
    mvn clean javafx:run
