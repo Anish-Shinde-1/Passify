@@ -177,7 +177,7 @@ public class LoginController {
         masterPassword.clear();
         reEnteredMasterPassword.clear();
         userEmail.clear();
-        alertLabel.setText(""); // Clear alert messages
+        // alertLabel.setText(""); // Clear alert messages
     }
 
     /**

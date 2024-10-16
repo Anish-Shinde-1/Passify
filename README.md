@@ -109,9 +109,11 @@ To set up Passify on your local machine, follow these steps:
          choco install maven
          ```
    
-7. **Build the project:**
-
-   ```bash
+7. **Build the project:**        
+    
+    - Go to the Passify/ directory where the pom.xml file is present and build the project.
+   
+    ```bash
    mvn clean install
    ```
 
