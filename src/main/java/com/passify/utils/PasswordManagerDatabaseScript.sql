@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS User (
     hashed_password VARCHAR(255) NOT NULL,
     hash_salt VARCHAR(255) NOT NULL,
     user_email VARCHAR(255) NOT NULL UNIQUE,
-    encryption_key VARCHAR(255) NOT NULL,  -- New encryption_key column
+    encryption_key VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS Password (
     user_id CHAR(36) NOT NULL,
     encrypted_password VARCHAR(255) NOT NULL,
     encryption_salt VARCHAR(255) NOT NULL,
-    category ENUM('Work', 'Social', 'Misc') NOT NULL,  -- Changed to ENUM
+    category ENUM('Work', 'Social', 'Misc') NOT NULL,
     app_name VARCHAR(100) NOT NULL,
     app_username VARCHAR(100) NOT NULL,
     app_url VARCHAR(255),

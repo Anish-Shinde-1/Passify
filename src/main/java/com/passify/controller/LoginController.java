@@ -132,7 +132,7 @@ public class LoginController {
      */
     @FXML
     private void handleRegister(ActionEvent event) {
-        System.out.println("Register button pressed."); // Debug statement
+        System.out.println("Register button pressed.");
         String username = userName.getText().trim();
         String password = masterPassword.getText();
         String confirmPassword = reEnteredMasterPassword.getText();
@@ -144,6 +144,19 @@ public class LoginController {
             return;
         }
 
+        // Password validation (length, uppercase, digit, and symbol checks)
+        if (!isValidPassword(password)) {
+            alertLabel.setText("Password must be at least 12 characters long,\ncontain 1 uppercase letter, 1 digit, and 1 special symbol.");
+            return;
+        }
+
+        // Email validation
+        if (!isValidEmail(email)) {
+            alertLabel.setText("Please enter a valid email address (e.g., name@example.com).");
+            return;
+        }
+
+        // Check if passwords match
         if (!password.equals(confirmPassword)) {
             alertLabel.setText("Passwords do not match.");
             return;
@@ -153,7 +166,7 @@ public class LoginController {
         Optional<UserModel> existingUserOpt = userDAO.getUserByEmail(email);
         if (existingUserOpt.isPresent()) {
             alertLabel.setText("Email already registered. Please login.");
-            System.out.println("Email already registered: " + email); // Debug statement
+            System.out.println("Email already registered: " + email);
             return;
         }
 
@@ -161,12 +174,73 @@ public class LoginController {
         UserModel newUser = userDAO.createUser(username, password, email);
         if (newUser != null) {
             alertLabel.setText("Registration successful! You can now log in.");
-            System.out.println("Registration successful for user: " + email); // Debug statement
+            System.out.println("Registration successful for user: " + email);
             clearFields();
         } else {
             alertLabel.setText("Registration failed. Username or email may already be in use.");
-            System.err.println("Registration failed for user: " + username); // Debug statement
+            System.err.println("Registration failed for user: " + username);
         }
+    }
+
+    /**
+     * Validates the password to ensure it meets the requirements.
+     *
+     * @param password the password entered by the user.
+     * @return true if the password is valid, false otherwise.
+     */
+    private boolean isValidPassword(String password) {
+        if (password.length() < 12) {
+            return false; // Password too short
+        }
+
+        boolean hasUppercase = false;
+        boolean hasDigit = false;
+        boolean hasSpecialChar = false;
+
+        for (char c : password.toCharArray()) {
+            if (Character.isUpperCase(c)) {
+                hasUppercase = true;
+            } else if (Character.isDigit(c)) {
+                hasDigit = true;
+            } else if (!Character.isLetterOrDigit(c)) {
+                hasSpecialChar = true; // Special character
+            }
+
+            // If all conditions are met, break early
+            if (hasUppercase && hasDigit && hasSpecialChar) {
+                return true;
+            }
+        }
+
+        // Return true only if all conditions are met
+        return hasUppercase && hasDigit && hasSpecialChar;
+    }
+
+    /**
+     * Validates the email to ensure it has a basic structure (e.g., contains '@' and ends with '.com').
+     *
+     * @param email the email entered by the user.
+     * @return true if the email is valid, false otherwise.
+     */
+    private boolean isValidEmail(String email) {
+        // Check if email contains '@' and ends with '.com'
+        int atIndex = email.indexOf('@');
+        if (atIndex < 1) {  // '@' should not be at the start
+            return false;
+        }
+
+        // Check if '.com' is at the end of the email
+        if (!email.endsWith(".com")) {
+            return false;
+        }
+
+        // Ensure there's something between '@' and '.com'
+        String domainPart = email.substring(atIndex + 1, email.length() - 4); // domain between '@' and '.com'
+        if (domainPart.isEmpty()) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
