@@ -131,7 +131,7 @@
             <Font name="JetBrains Mono Regular" size="16.0" />
          </font>
       </Button>
-      <ChoiceBox fx:id="appCategoryList" layoutX="60.0" layoutY="440.0" prefHeight="40.0" prefWidth="520.0" style="-fx-background-color: #404040;" />
+      <ChoiceBox fx:id="appCategoryList" layoutX="60.0" layoutY="440.0" prefHeight="40.0" prefWidth="520.0" style="-fx-text-fill: #ffffff; -fx-background-color: #404040;" />
       <TextField fx:id="appPassword" layoutX="60.0" layoutY="280.0" prefHeight="40.0" prefWidth="400.0" style="-fx-text-fill: #FFFFFF; -fx-background-color: #404040;">
          <font>
             <Font name="JetBrains Mono Regular" size="16.0" />

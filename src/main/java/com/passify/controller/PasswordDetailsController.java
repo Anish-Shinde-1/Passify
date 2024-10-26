@@ -90,7 +90,7 @@ public class PasswordDetailsController {
     private void populatePasswordDetails() {
         if (currentPassword != null) {
             appName.setText(currentPassword.getAppName());
-            appCategory.setText(currentPassword.getCategory().name()); // Assuming enum for category
+            appCategory.setText(currentPassword.getCategory().name()); 
             appUsername.setText(currentPassword.getAppUsername());
             appPassword.setText("                "); // Do not show the encrypted password
             appEmail.setText(currentPassword.getAppEmail());
