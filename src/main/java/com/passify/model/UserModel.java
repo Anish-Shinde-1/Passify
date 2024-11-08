@@ -7,23 +7,23 @@ import java.sql.Timestamp;
 import java.util.Base64;
 
 public class UserModel {
-    private String userId; // user_id
-    private String userName; // user_name
-    private String hashedPassword; // hashed_password
-    private String hashSalt; // hash_salt
-    private String userEmail; // user_email
-    private SecretKey encryptionKey; // Changed to SecretKey type
-    private Timestamp createdAt; // created_at
-    private Timestamp updatedAt; // updated_at
+    private String userId;
+    private String userName;
+    private String hashedPassword;
+    private String hashSalt;
+    private String userEmail;
+    private SecretKey encryptionKey;
+    private Timestamp createdAt;
+    private Timestamp updatedAt;
 
-    // Constructor
+    // Custom Constructor
     public UserModel(String userId, String userName, String hashedPassword, String hashSalt, String userEmail, SecretKey encryptionKey, Timestamp createdAt, Timestamp updatedAt) {
         this.userId = userId;
         this.userName = userName;
         this.hashedPassword = hashedPassword;
         this.hashSalt = hashSalt;
         this.userEmail = userEmail;
-        this.encryptionKey = encryptionKey; // Initialize encryptionKey
+        this.encryptionKey = encryptionKey;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -32,7 +32,6 @@ public class UserModel {
     public UserModel() {
     }
 
-    // Getters and Setters
     public String getUserId() {
         return userId;
     }

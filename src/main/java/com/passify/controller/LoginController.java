@@ -18,10 +18,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Optional;
 
-/**
- * The LoginController class handles user login and registration functionalities.
- * It manages the interactions between the user interface and the UserDAO for user-related operations.
- */
 public class LoginController {
 
     @FXML
@@ -34,7 +30,7 @@ public class LoginController {
     private PasswordField masterPassword;
 
     @FXML
-    private PasswordField reEnteredMasterPassword; // Used for re-entering the password during login
+    private PasswordField reEnteredMasterPassword; // Field for re-entering password during login
 
     @FXML
     private Button registerButton;
@@ -46,48 +42,36 @@ public class LoginController {
     private TextField userName;
 
     private UserDAO userDAO;
-    private Connection connection; // Database connection variable
+    private Connection connection; // Database connection
 
-    /**
-     * Initializes the LoginController with a database connection.
-     * This constructor attempts to create a connection to the database and initializes UserDAO.
-     */
+    // Constructor to initialize the LoginController and database connection
     public LoginController() {
         try {
-            Connection connection = JDBC_Connector.getConnection();
-            this.userDAO = new UserDAO(connection);
+            Connection connection = JDBC_Connector.getConnection(); // Get the database connection
+            this.userDAO = new UserDAO(connection); // Initialize the UserDAO with the connection
             System.out.println("UserDAO initialized successfully.");
         } catch (SQLException e) {
             System.err.println("Database connection error in constructor: " + e.getMessage());
         }
     }
 
-    /**
-     * Sets the database connection and initializes the UserDAO.
-     *
-     * @param connection the Connection object to be set for database operations.
-     * @throws SQLException if an error occurs while initializing UserDAO with the provided connection.
-     */
+    // Sets the database connection and initializes UserDAO
     public void setConnection(Connection connection) throws SQLException {
-        this.connection = connection; // Set the connection
-        this.userDAO = new UserDAO(connection); // Initialize UserDAO with the provided connection
+        this.connection = connection; // Set the database connection
+        this.userDAO = new UserDAO(connection); // Initialize UserDAO with the new connection
     }
 
-    /**
-     * Handles the login action when the login button is pressed.
-     *
-     * @param event the ActionEvent triggered by pressing the login button.
-     */
+    // Handles login action when the login button is pressed
     @FXML
     private void handleLogin(ActionEvent event) {
-        System.out.println("Login button pressed."); // Debug statement
+        System.out.println("Login button pressed."); // Debugging log
 
         String username = userName.getText().trim();
-        String email = userEmail.getText().trim(); // Use userEmail for login
+        String email = userEmail.getText().trim(); // Get the email for login
         String password = masterPassword.getText();
         String reEnteredPassword = reEnteredMasterPassword.getText(); // Get the re-entered password
 
-        // Validate input fields
+        // Validate that all fields are filled
         if (username.isEmpty() || email.isEmpty() || password.isEmpty() || reEnteredPassword.isEmpty()) {
             alertLabel.setText("Please fill in all fields.");
             return;
@@ -99,37 +83,32 @@ public class LoginController {
             return;
         }
 
-        // Fetch the user by email
+        // Check if user exists by email
         Optional<UserModel> userOpt = userDAO.getUserByEmail(email);
         if (userOpt.isPresent()) {
             UserModel user = userOpt.get();
             try {
                 boolean loginSuccess = userDAO.verifyUserPassword(user.getUserId(), password);
-                System.out.println("Login attempt for user: " + email); // Debug statement
+                System.out.println("Login attempt for user: " + email); // Debugging log
 
                 if (loginSuccess) {
-                    System.out.println("Login successful for user: " + email); // Debug statement
-                    // Proceed to the main application or dashboard
-                    switchToMainScene(user.getUserId()); // Switch to main.fxml
+                    System.out.println("Login successful for user: " + email); // Debugging log
+                    switchToMainScene(user.getUserId()); // Proceed to the main scene
                 } else {
                     alertLabel.setText("Invalid email or password.");
-                    System.err.println("Invalid login attempt for user: " + email); // Debug statement
+                    System.err.println("Invalid login attempt for user: " + email); // Debugging log
                 }
             } catch (Exception e) {
                 alertLabel.setText("Error during login: " + e.getMessage());
-                System.err.println("Exception during login: " + e.getMessage()); // Debug statement
+                System.err.println("Exception during login: " + e.getMessage()); // Debugging log
             }
         } else {
             alertLabel.setText("User not found. Please register.");
-            System.out.println("User not found: " + email); // Debug statement
+            System.out.println("User not found: " + email); // Debugging log
         }
     }
 
-    /**
-     * Handles the registration action when the register button is pressed.
-     *
-     * @param event the ActionEvent triggered by pressing the register button.
-     */
+    // Handles registration when the register button is pressed
     @FXML
     private void handleRegister(ActionEvent event) {
         System.out.println("Register button pressed.");
@@ -138,19 +117,19 @@ public class LoginController {
         String confirmPassword = reEnteredMasterPassword.getText();
         String email = userEmail.getText().trim();
 
-        // Validate input fields
+        // Validate that all fields are filled
         if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || email.isEmpty()) {
             alertLabel.setText("Please fill in all fields.");
             return;
         }
 
-        // Password validation (length, uppercase, digit, and symbol checks)
+        // Validate password to meet specific criteria
         if (!isValidPassword(password)) {
             alertLabel.setText("Password must be at least 12 characters long,\ncontain 1 uppercase letter, 1 digit, and 1 special symbol.");
             return;
         }
 
-        // Email validation
+        // Validate email format
         if (!isValidEmail(email)) {
             alertLabel.setText("Please enter a valid email address (e.g., name@example.com).");
             return;
@@ -162,7 +141,7 @@ public class LoginController {
             return;
         }
 
-        // Check if user already exists by email
+        // Check if user already exists
         Optional<UserModel> existingUserOpt = userDAO.getUserByEmail(email);
         if (existingUserOpt.isPresent()) {
             alertLabel.setText("Email already registered. Please login.");
@@ -170,24 +149,19 @@ public class LoginController {
             return;
         }
 
-        // Create new user
+        // Register the new user
         UserModel newUser = userDAO.createUser(username, password, email);
         if (newUser != null) {
             alertLabel.setText("Registration successful! You can now log in.");
             System.out.println("Registration successful for user: " + email);
-            clearFields();
+            clearFields(); // Clear the fields after successful registration
         } else {
             alertLabel.setText("Registration failed. Username or email may already be in use.");
-            System.err.println("Registration failed for user: " + username);
+            System.err.println("Registration failed for user: " + username); // Debugging log
         }
     }
 
-    /**
-     * Validates the password to ensure it meets the requirements.
-     *
-     * @param password the password entered by the user.
-     * @return true if the password is valid, false otherwise.
-     */
+    // Validates the password based on set rules (length, uppercase, digits, special characters)
     private boolean isValidPassword(String password) {
         if (password.length() < 12) {
             return false; // Password too short
@@ -206,36 +180,28 @@ public class LoginController {
                 hasSpecialChar = true; // Special character
             }
 
-            // If all conditions are met, break early
+            // Early exit if all conditions are met
             if (hasUppercase && hasDigit && hasSpecialChar) {
                 return true;
             }
         }
 
-        // Return true only if all conditions are met
-        return hasUppercase && hasDigit && hasSpecialChar;
+        return hasUppercase && hasDigit && hasSpecialChar; // Return true only if all conditions are met
     }
 
-    /**
-     * Validates the email to ensure it has a basic structure (e.g., contains '@' and ends with '.com').
-     *
-     * @param email the email entered by the user.
-     * @return true if the email is valid, false otherwise.
-     */
+    // Validates the email format
     private boolean isValidEmail(String email) {
         // Check if email contains '@' and ends with '.com'
         int atIndex = email.indexOf('@');
-        if (atIndex < 1) {  // '@' should not be at the start
-            return false;
+        if (atIndex < 1) {
+            return false; // '@' should not be at the start
         }
 
-        // Check if '.com' is at the end of the email
         if (!email.endsWith(".com")) {
-            return false;
+            return false; // Check if email ends with '.com'
         }
 
-        // Ensure there's something between '@' and '.com'
-        String domainPart = email.substring(atIndex + 1, email.length() - 4); // domain between '@' and '.com'
+        String domainPart = email.substring(atIndex + 1, email.length() - 4); // Get domain part between '@' and '.com'
         if (domainPart.isEmpty()) {
             return false;
         }
@@ -243,61 +209,53 @@ public class LoginController {
         return true;
     }
 
-    /**
-     * Clears the input fields after successful registration.
-     */
+    // Clears input fields after successful registration
     private void clearFields() {
         userName.clear();
         masterPassword.clear();
         reEnteredMasterPassword.clear();
         userEmail.clear();
-        // alertLabel.setText(""); // Clear alert messages
     }
 
-    /**
-     * Switches the scene to the main application view after a successful login.
-     *
-     * @param userId the unique identifier of the user to be passed to the main application.
-     */
+    // Switches to the main application scene after a successful login
     private void switchToMainScene(String userId) {
         try {
-            // Fetch the user by ID and handle the Optional<UserModel>
             Optional<UserModel> userOpt = userDAO.getUserById(userId);
             if (userOpt.isPresent()) {
                 UserModel user = userOpt.get(); // Get the UserModel instance
 
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/passify/views/main.fxml"));
-                System.out.println("Attempting to load main.fxml..."); // Debug statement
+                System.out.println("Attempting to load main.fxml..."); // Debugging log
                 Parent mainView = loader.load();
 
-                // Get the controller and initialize it
                 MainController mainController = loader.getController();
                 if (mainController == null) {
-                    System.err.println("MainController is null!"); // Debug statement
+                    System.err.println("MainController is null!"); // Debugging log
                     return;
                 }
 
-                // Initialize the MainController with the connection and user
-                Connection connection = JDBC_Connector.getConnection(); // Get a new connection
+                // Initialize the MainController with the user and database connection
+                Connection connection = JDBC_Connector.getConnection(); // New connection for the main scene
                 if (connection == null) {
                     System.err.println("Failed to establish a new database connection for mainController.");
                     return;
                 }
-                mainController.initializeDependencies(connection, user); // Pass the UserModel instance
-                System.out.println("Initialized MainController successfully."); // Debug statement
+                mainController.initializeDependencies(connection, user); // Pass the user to the MainController
+                System.out.println("Initialized MainController successfully."); // Debugging log
 
+                // Switch the scene to the main application view
                 Scene mainScene = new Scene(mainView);
                 Stage currentStage = (Stage) loginButton.getScene().getWindow();
                 currentStage.setScene(mainScene);
                 currentStage.show();
-                System.out.println("Switched to main scene for user: " + user.getUserName()); // Show the logged-in user
+                System.out.println("Switched to main scene for user: " + user.getUserName()); // Debugging log
             } else {
-                System.err.println("User not found in the database: " + userId); // Debug statement
+                System.err.println("User not found in the database: " + userId); // Debugging log
             }
         } catch (Exception e) {
-            e.printStackTrace();  // Print full stack trace for debugging
+            e.printStackTrace(); // Print stack trace for debugging
             alertLabel.setText("Error loading main screen: " + e.getMessage());
-            System.err.println("Exception loading main screen: " + e.getMessage()); // Debug statement
+            System.err.println("Exception loading main screen: " + e.getMessage()); // Debugging log
         }
     }
 }

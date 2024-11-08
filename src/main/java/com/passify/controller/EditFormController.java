@@ -15,147 +15,117 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Optional;
 
-/**
- * Controller for editing password entries in the application.
- * This class handles the functionality to add or edit password details,
- * including form validation and data management.
- */
 public class EditFormController {
 
     @FXML
-    private Label passwordFormLabel; // Label to display the form title
+    private Label passwordFormLabel;
 
     @FXML
-    private ChoiceBox<String> appCategoryList; // Dropdown for selecting application categories
+    private ChoiceBox<String> appCategoryList;
 
     @FXML
-    private TextField appEmail; // TextField for the application's email
+    private TextField appEmail;
 
     @FXML
-    private TextField appName; // TextField for the application's name
+    private TextField appName;
 
     @FXML
-    private TextField appNotes; // TextField for additional notes related to the password
+    private TextField appNotes;
 
     @FXML
-    private TextField appPassword; // TextField for the application's password (visible for editing)
+    private TextField appPassword;
 
     @FXML
-    private TextField appUsername; // TextField for the application's username
+    private TextField appUsername;
 
     @FXML
-    private TextField appUrl; // TextField for the application's URL
+    private TextField appUrl;
 
     @FXML
-    private Button cancelEditButton; // Button to cancel the edit operation
+    private Button cancelEditButton;
 
     @FXML
-    private Pane editPasswordPanel; // Panel containing the edit password form
+    private Pane editPasswordPanel;
 
     @FXML
-    private Button generatePasswordButton; // Button to generate a random password
+    private Button generatePasswordButton;
 
     @FXML
-    private Button saveEditButton; // Button to save the edited password details
+    private Button saveEditButton;
 
-    private PasswordModel currentPassword; // The password being edited or added
-    private PasswordDAO passwordDAO; // Data access object for managing password data
-    private Connection connection; // Database connection
-    private UserModel currentUser; // Currently logged-in user
+    private PasswordModel currentPassword;
+    private PasswordDAO passwordDAO;
+    private Connection connection;
+    private UserModel currentUser;
 
-    // Reference to the parent controller (e.g., MainController)
-    private MainController parentController;
+    private MainController parentController; // Reference to the parent controller for navigation
 
-    /**
-     * Initializes the EditFormController with the necessary data and sets up the UI.
-     *
-     * @param connection the database connection
-     * @param currentPassword the PasswordModel representing the current password being edited (or null for adding a new one)
-     * @param currentUser the UserModel representing the currently logged-in user
-     * @param parentController the MainController for navigating back to password details
-     * @throws SQLException if a database access error occurs
-     */
+    // Initialize the controller with necessary data and set up UI
     public void initialize(Connection connection, PasswordModel currentPassword, UserModel currentUser, MainController parentController) throws SQLException {
-        this.connection = connection; // Store the database connection
-        this.passwordDAO = new PasswordDAO(connection); // Initialize the PasswordDAO
-        this.currentUser = currentUser; // Store the current user
-        this.parentController = parentController; // Store the parent controller reference
+        this.connection = connection; // Set database connection
+        this.passwordDAO = new PasswordDAO(connection); // Initialize password DAO
+        this.currentUser = currentUser; // Set current user
+        this.parentController = parentController; // Set parent controller
 
-        populateCategoryList(); // Populate the category list
+        populateCategoryList(); // Populate categories in dropdown
 
-        // Check if currentPassword is null to determine if we're adding or editing
         if (currentPassword == null) {
-            passwordFormLabel.setText("Add New Password"); // Set form title for adding a new password
-            clearFormFields(); // Clear input fields for a new password entry
+            passwordFormLabel.setText("Add New Password"); // Set form label for adding new password
+            clearFormFields(); // Clear form fields for new entry
         } else {
-            setPassword(currentPassword); // Populate fields with existing data
-            passwordFormLabel.setText("Edit Password Details"); // Set form title for editing an existing password
+            setPassword(currentPassword); // Populate fields with existing password data
+            passwordFormLabel.setText("Edit Password Details"); // Set form label for editing password
         }
     }
 
-    /**
-     * Clears all form fields for new password entry.
-     */
+    // Clear form fields when adding a new password
     private void clearFormFields() {
         appName.clear();
         appUsername.clear();
-        appPassword.clear(); // Ensure password field is cleared
+        appPassword.clear();
         appEmail.clear();
         appNotes.clear();
-        appUrl.clear(); // Clear URL field
-        appCategoryList.setValue(null); // Reset the choice box
+        appUrl.clear();
+        appCategoryList.setValue(null); // Reset category selection
     }
 
-    /**
-     * Populates the UI fields with the details of the given PasswordModel.
-     *
-     * @param password the PasswordModel containing password details
-     */
+    // Set form fields based on existing password data
     public void setPassword(PasswordModel password) {
-        this.currentPassword = password; // Store the current password
+        this.currentPassword = password;
         appName.setText(password.getAppName());
         appUsername.setText(password.getAppUsername());
 
-        // Set the password text for editing (ensure this is not null)
         String currentAppPassword = password.getAppPassword();
         if (currentAppPassword != null) {
-            appPassword.setText(currentAppPassword); // Populate password field
+            appPassword.setText(currentAppPassword); // Set password if available
         } else {
-            appPassword.clear(); // Clear field if password is null
+            appPassword.clear(); // Clear password field if not available
         }
 
         appEmail.setText(password.getAppEmail());
         appNotes.setText(password.getAppNotes());
-        appUrl.setText(password.getAppUrl()); // Set the URL
-
-        // Set the category name in the ChoiceBox
-        appCategoryList.setValue(password.getCategory().toString());
+        appUrl.setText(password.getAppUrl());
+        appCategoryList.setValue(password.getCategory().toString()); // Set the category value
     }
 
-    /**
-     * Populates the category ChoiceBox with available category options.
-     */
+    // Populate the category dropdown with available categories
     private void populateCategoryList() {
         for (PasswordModel.Category category : PasswordModel.Category.values()) {
-            appCategoryList.getItems().add(category.toString()); // Add categories to the ChoiceBox
+            appCategoryList.getItems().add(category.toString()); // Add each category to the dropdown
         }
     }
 
-    /**
-     * Generates a random password and sets it in the password field.
-     */
+    // Generate a random password and populate the password field
     @FXML
     private void handleGeneratePassword() {
-        String generatedPassword = PasswordGenerator.generatePassword(); // Generate a random password
-        appPassword.setText(generatedPassword); // Set the generated password in the appPassword field
+        String generatedPassword = PasswordGenerator.generatePassword(); // Generate a password
+        appPassword.setText(generatedPassword); // Set generated password in the field
     }
 
-    /**
-     * Handles the action of saving the edited password details.
-     */
+    // Save the edited password details to the database
     @FXML
     private void handleSaveEdit() {
-        // Confirm action with the user
+        // Confirm save action with the user
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(currentPassword == null ? "Confirm Add" : "Confirm Save");
         alert.setHeaderText(currentPassword == null ? "Are you sure you want to add this new password?" : "Are you sure you want to save the changes?");
@@ -164,39 +134,36 @@ public class EditFormController {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
-                // Gather form data
+                // Collect form data
                 String appNameText = appName.getText();
                 String appCategoryName = appCategoryList.getValue();
 
-                // Validate category selection
                 if (appCategoryName == null || appCategoryName.isEmpty()) {
-                    logAndAlert("Category must be selected.", null);
-                    return; // Exit early if no category is selected
+                    logAndAlert("Category must be selected.", null); // Show error if no category is selected
+                    return;
                 }
 
                 PasswordModel.Category appCategory = PasswordModel.Category.valueOf(appCategoryName);
                 String appUsernameText = appUsername.getText();
-                String appPasswordText = appPassword.getText(); // Retrieve plain text for encryption
+                String appPasswordText = appPassword.getText();
                 String appEmailText = appEmail.getText();
                 String appUrlText = appUrl.getText();
                 String appNotesText = appNotes.getText();
 
-                // Check if the password is empty before processing
                 if (appPasswordText == null || appPasswordText.trim().isEmpty()) {
-                    logAndAlert("Password cannot be empty.", null);
-                    return; // Exit early if the password is empty
+                    logAndAlert("Password cannot be empty.", null); // Show error if password is empty
+                    return;
                 }
 
-                // Debugging statement to check the password
-                System.out.println("App Password: " + appPasswordText); // Check what the password is
+                System.out.println("App Password: " + appPasswordText); // Debugging password value
 
                 if (currentPassword == null) {
-                    // Create a new PasswordModel instance for adding
+                    // Add new password to the database
                     PasswordModel newPassword = new PasswordModel(
                             currentUser.getUserId(),
-                            null, // Password will be encrypted later
+                            null,
                             appPasswordText,
-                            null, // Salt will be generated during encryption
+                            null,
                             appCategory,
                             appNameText,
                             appUsernameText,
@@ -207,29 +174,27 @@ public class EditFormController {
                             false
                     );
 
-                    // Add the new password using the DAO
                     if (passwordDAO.addPassword(newPassword, currentUser)) {
                         System.out.println("New password added successfully.");
                         logAndAlertSuccess("New password added successfully.");
-                        navigateBackToPasswordDetails(); // Navigate back to password details
+                        navigateBackToPasswordDetails();
                     } else {
                         logAndAlert("Failed to add new password.", null);
                     }
                 } else {
-                    // Update the existing password details
+                    // Update existing password details
                     currentPassword.setAppName(appNameText);
                     currentPassword.setCategory(appCategory);
                     currentPassword.setAppUsername(appUsernameText);
-                    currentPassword.setAppPassword(appPasswordText); // Set plain text for encryption
+                    currentPassword.setAppPassword(appPasswordText);
                     currentPassword.setAppEmail(appEmailText);
                     currentPassword.setAppUrl(appUrlText);
                     currentPassword.setAppNotes(appNotesText);
 
-                    // Update the password using the DAO
                     if (passwordDAO.updatePassword(currentPassword, currentUser)) {
                         System.out.println("Password details updated successfully.");
                         logAndAlertSuccess("Password details updated successfully");
-                        navigateBackToPasswordDetails(); // Navigate back to password details
+                        navigateBackToPasswordDetails();
                     } else {
                         logAndAlert("Failed to update password details.", null);
                     }
@@ -242,9 +207,7 @@ public class EditFormController {
         }
     }
 
-    /**
-     * Handles the action of canceling the edit operation.
-     */
+    // Handle canceling the edit operation
     @FXML
     private void handleCancelEdit() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -254,63 +217,48 @@ public class EditFormController {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            navigateBackToPasswordDetails(); // Navigate back to the password details view
+            navigateBackToPasswordDetails(); // Navigate back to password details view
         }
     }
 
-    /**
-     * Navigates back to the PasswordDetailsController within the same page holder.
-     */
+    // Navigate back to the password details page
     private void navigateBackToPasswordDetails() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/passify/views/password_details.fxml"));
             Parent passwordDetailsView = loader.load();
 
-            // Get the controller for the password details view
             PasswordDetailsController passwordDetailsController = loader.getController();
-            passwordDetailsController.initialize(connection, currentPassword, currentUser, parentController); // Pass dependencies
+            passwordDetailsController.initialize(connection, currentPassword, currentUser, parentController); // Pass necessary data
 
-            // Use the parentController to switch views within the pageHolder
-            parentController.setPageHolderContent(passwordDetailsView); // Load the password details view into the pageHolder
+            parentController.setPageHolderContent(passwordDetailsView); // Set the new view in the parent controller
         } catch (IOException | SQLException e) {
             logAndAlert("Failed to navigate back to password details.", e);
         }
     }
 
-    /**
-     * Logs an error message and displays an alert with the error details.
-     *
-     * @param message the message to log and display
-     * @param e the exception that occurred (can be null)
-     */
+    // Log an error and show an alert
     private void logAndAlert(String message, Exception e) {
-        System.out.println(message); // Log the error message
+        System.out.println(message);
         if (e != null) {
-            e.printStackTrace(); // Print stack trace for debugging
+            e.printStackTrace(); // Print exception stack trace
         }
 
-        // Show an error dialog to the user
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
         alert.setHeaderText(message);
         if (e != null) {
-            alert.setContentText(e.getMessage()); // Show exception message
+            alert.setContentText(e.getMessage());
         }
         alert.showAndWait(); // Wait for user to acknowledge the alert
     }
 
-    /**
-     * Logs a success message and displays a success alert with the success details.
-     *
-     * @param message the success message to log and display
-     */
+    // Log a success message and show a success alert
     private void logAndAlertSuccess(String message) {
-        System.out.println(message); // Log the success message
+        System.out.println(message);
 
-        // Show a success dialog to the user
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Success");
         alert.setHeaderText(message);
-        alert.showAndWait(); // Wait for user to acknowledge the alert
+        alert.showAndWait();
     }
 }

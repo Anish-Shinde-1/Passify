@@ -11,7 +11,7 @@ public class PasswordModel {
 
         public static Category fromString(String category) {
             if (category == null) {
-                return null; // or throw an exception
+                return null;
             }
             return switch (category.toUpperCase()) {
                 case "WORK" -> WORK;
@@ -22,21 +22,21 @@ public class PasswordModel {
         }
     }
 
-    private String passwordId; // password_id
-    private String userId; // user_id
-    private String encryptedPassword; // encrypted_password
+    private String passwordId;
+    private String userId;
+    private String encryptedPassword;
     private String appPassword;
-    private String encryptionSalt; // encryption_salt
-    private Category category; // Changed to use the Category enum
-    private String appName; // app_name
-    private String appUsername; // app_username
-    private String appUrl; // app_url
-    private String appEmail; // app_email
-    private String appNotes; // app_notes
-    private String passwordState; // password_state
-    private boolean isFavourite; // isFavourite
-    private Timestamp createdAt; // created_at
-    private Timestamp updatedAt; // updated_at
+    private String encryptionSalt;
+    private Category category;
+    private String appName;
+    private String appUsername;
+    private String appUrl;
+    private String appEmail;
+    private String appNotes;
+    private String passwordState;
+    private boolean isFavourite;
+    private Timestamp createdAt;
+    private Timestamp updatedAt;
 
     // Custom constructor
     public PasswordModel(String userId, String encryptedPassword, String encryptionSalt,
@@ -82,7 +82,6 @@ public class PasswordModel {
     public PasswordModel() {
     }
 
-    // Getters and Setters for each field
     public String getPasswordId() {
         return passwordId;
     }

@@ -14,12 +14,7 @@ public class JDBC_Connector {
     // Singleton connection instance to ensure only one connection is used throughout
     private static Connection connection;
 
-    /**
-     * This method provides a connection to the MySQL database.
-     * It uses a singleton pattern to ensure only one connection is open at a time.
-     *
-     * @return Connection object to the database
-     */
+    // Provides a connection to the MySQL database
     public static Connection getConnection() {
         if (connection == null) {  // Only establish a new connection if none exists
             try {
@@ -30,8 +25,7 @@ public class JDBC_Connector {
                 connection = DriverManager.getConnection(URL, USER, PASSWORD);
                 System.out.println("Database connection established successfully.");
             } catch (ClassNotFoundException | SQLException e) {
-                // Handle possible exceptions: ClassNotFoundException if driver not found,
-                // and SQLException if connection fails
+                // Print stack trace if the connection fails due to driver issues or SQL problems
                 e.printStackTrace();
                 System.out.println("Failed to connect to the database.");
             }
@@ -39,17 +33,15 @@ public class JDBC_Connector {
         return connection;  // Return the connection object
     }
 
-    /**
-     * Closes the current connection to the database if it exists.
-     */
+    // Closes the current connection to the database if it exists
     public static void closeConnection() {
-        if (connection != null) {  // Check if a connection is open
+        if (connection != null) {  // Check if a connection is currently open
             try {
                 connection.close();  // Close the connection
                 connection = null;   // Reset the connection instance to null after closing
                 System.out.println("Database connection closed.");
             } catch (SQLException e) {
-                // Handle any exceptions during the connection closing process
+                // Handle any exceptions that occur during the closing of the connection
                 e.printStackTrace();
             }
         }

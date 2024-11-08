@@ -2,7 +2,7 @@ package com.passify.controller;
 
 import com.passify.model.PasswordDAO;
 import com.passify.model.PasswordModel;
-import com.passify.model.UserModel; // Assuming UserModel is defined
+import com.passify.model.UserModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -20,60 +20,45 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Optional;
 
-/**
- * Controller for displaying and managing password details in the application.
- * This class handles actions related to password operations, such as copying
- * details to the clipboard, editing password entries, and managing favorites.
- */
 public class PasswordDetailsController {
 
     @FXML
-    private Label appCategory; // Label to display the application's category
+    private Label appCategory;
     @FXML
-    private TextField appEmail; // TextField for the application's email
+    private TextField appEmail;
     @FXML
-    private Label appName; // Label to display the application's name
+    private Label appName;
     @FXML
-    private TextField appNotes; // TextField for any notes related to the password
+    private TextField appNotes;
     @FXML
-    private PasswordField appPassword; // PasswordField to display the application's password
+    private PasswordField appPassword;
     @FXML
-    private Label appUrl; // Label to display the application's URL
+    private Label appUrl;
     @FXML
-    private TextField appUsername; // TextField for the application's username
+    private TextField appUsername;
     @FXML
-    private Button copyAppEmail; // Button to copy email to clipboard
+    private Button copyAppEmail;
     @FXML
-    private Button copyAppPassword; // Button to copy password to clipboard
+    private Button copyAppPassword;
     @FXML
-    private Button copyAppUsername; // Button to copy username to clipboard
+    private Button copyAppUsername;
     @FXML
-    private Button editPasswordButton; // Button to edit the password
+    private Button editPasswordButton;
     @FXML
-    private Button favouritePasswordButton; // Button to mark/unmark the password as a favorite
+    private Button favouritePasswordButton;
     @FXML
-    private Pane passwordDetailsPanel; // Panel that contains the password details UI elements
+    private Pane passwordDetailsPanel;
     @FXML
-    private Button trashPasswordButton; // Button to move the password to trash
+    private Button trashPasswordButton;
 
-    private PasswordDAO passwordDAO; // Data access object for managing password data
-    private PasswordModel currentPassword; // The password currently being viewed/edited
-    private Stage stage; // Stage reference for managing window behavior
-    private MainController mainController; // Reference to the main application controller
+    private PasswordDAO passwordDAO;
+    private PasswordModel currentPassword;
+    private Stage stage;
+    private MainController mainController;
 
-    // Injecting the database connection from the main application or other controller
-    private Connection connection; // Database connection
-    private UserModel currentUser; // Currently logged-in user
+    private Connection connection;
+    private UserModel currentUser;
 
-    /**
-     * Initializes the PasswordDetailsController with the necessary data and UI elements.
-     *
-     * @param connection the database connection
-     * @param password the PasswordModel representing the current password
-     * @param user the UserModel representing the currently logged-in user
-     * @param mainController the main controller for the application
-     * @throws SQLException if a database access error occurs
-     */
     public void initialize(Connection connection, PasswordModel password, UserModel user, MainController mainController) throws SQLException {
         this.connection = connection;
         this.passwordDAO = new PasswordDAO(connection); // Initialize the PasswordDAO
@@ -84,13 +69,11 @@ public class PasswordDetailsController {
         populatePasswordDetails(); // Populate the UI with the current password details
     }
 
-    /**
-     * Populates the UI elements with data from the current PasswordModel.
-     */
+    // Populate the UI elements with data from the current PasswordModel
     private void populatePasswordDetails() {
         if (currentPassword != null) {
             appName.setText(currentPassword.getAppName());
-            appCategory.setText(currentPassword.getCategory().name()); 
+            appCategory.setText(currentPassword.getCategory().name());
             appUsername.setText(currentPassword.getAppUsername());
             appPassword.setText("                "); // Do not show the encrypted password
             appEmail.setText(currentPassword.getAppEmail());
@@ -100,13 +83,10 @@ public class PasswordDetailsController {
         }
     }
 
-    /**
-     * Copies the password to the clipboard after decrypting it.
-     */
+    // Copies the password to the clipboard after decrypting it
     @FXML
     private void handleCopyAppPassword() {
         try {
-            // Decrypt password before copying
             Optional<PasswordModel> passwordOpt = passwordDAO.getPasswordById(currentPassword.getPasswordId(), currentUser);
             if (passwordOpt.isPresent()) {
                 String decryptedPassword = passwordOpt.get().getAppPassword(); // Retrieve the decrypted password
@@ -122,9 +102,7 @@ public class PasswordDetailsController {
         }
     }
 
-    /**
-     * Copies the username to the clipboard.
-     */
+    // Copies the username to the clipboard
     @FXML
     private void handleCopyAppUsername() {
         try {
@@ -137,9 +115,7 @@ public class PasswordDetailsController {
         }
     }
 
-    /**
-     * Copies the email to the clipboard.
-     */
+    // Copies the email to the clipboard
     @FXML
     private void handleCopyAppEmail() {
         try {
@@ -152,11 +128,7 @@ public class PasswordDetailsController {
         }
     }
 
-    /**
-     * Displays a confirmation alert when text is copied to the clipboard.
-     *
-     * @param message the message to display in the confirmation alert
-     */
+    // Displays a confirmation alert when text is copied to the clipboard
     private void showCopyConfirmation(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Copy Confirmation");
@@ -165,20 +137,15 @@ public class PasswordDetailsController {
         alert.showAndWait(); // Wait for user to acknowledge
     }
 
-    /**
-     * Loads the edit password form for modifying the current password.
-     */
+    // Loads the edit password form for modifying the current password
     @FXML
     private void handleEditPassword() {
         try {
-            // Load the edit_form.fxml
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/passify/views/edit_form.fxml"));
             Parent editFormView = loader.load();
 
             // Get the EditFormController and initialize it
             EditFormController editFormController = loader.getController();
-
-            // Pass the necessary data to the EditFormController
             editFormController.initialize(connection, currentPassword, currentUser, mainController);
 
             // Load the edit form into the pageHolder of MainController
@@ -192,9 +159,7 @@ public class PasswordDetailsController {
         }
     }
 
-    /**
-     * Moves the current password to the trash (soft delete).
-     */
+    // Moves the current password to the trash (soft delete)
     @FXML
     private void handleTrashPassword() {
         try {
@@ -209,16 +174,13 @@ public class PasswordDetailsController {
         }
     }
 
-    /**
-     * Toggles the favorite status of the current password.
-     */
+    // Toggles the favorite status of the current password
     @FXML
     private void handleFavouritePassword() {
         try {
             currentPassword.setFavourite(!currentPassword.isFavourite()); // Toggle favorite status
 
-            // Update the password's favorite status
-            if (passwordDAO.updatePassword(currentPassword, currentUser)) { // Assuming updatePassword requires currentUser
+            if (passwordDAO.updatePassword(currentPassword, currentUser)) { // Update password
                 System.out.println("Password marked as favorite.");
                 updateFavoriteButtonState(); // Update button state
             } else {
@@ -229,11 +191,7 @@ public class PasswordDetailsController {
         }
     }
 
-    /**
-     * Copies the specified text to the system clipboard.
-     *
-     * @param text the text to copy to the clipboard
-     */
+    // Copies the specified text to the system clipboard
     private void copyToClipboard(String text) {
         Clipboard clipboard = Clipboard.getSystemClipboard();
         ClipboardContent content = new ClipboardContent();
@@ -241,9 +199,7 @@ public class PasswordDetailsController {
         clipboard.setContent(content); // Update the clipboard
     }
 
-    /**
-     * Updates the state of the favorite button based on the current password's favorite status.
-     */
+    // Updates the state of the favorite button based on the current password's favorite status
     private void updateFavoriteButtonState() {
         ImageView bookmarkIcon = (ImageView) favouritePasswordButton.getGraphic();
         String filledBookmarkPath = "/com/passify/icons/FilledBookmark.png";
@@ -257,39 +213,24 @@ public class PasswordDetailsController {
         }
     }
 
-    /**
-     * Closes the current window.
-     */
+    // Closes the current window
     private void closeWindow() {
         if (stage != null) {
             stage.close(); // Close the stage if it exists
         }
     }
 
-    /**
-     * Sets the Stage for this controller.
-     *
-     * @param stage the Stage to set
-     */
+    // Sets the Stage for this controller
     public void setStage(Stage stage) {
         this.stage = stage; // Store the Stage reference
     }
 
-    /**
-     * Sets the main controller for this PasswordDetailsController.
-     *
-     * @param mainController the MainController to set
-     */
+    // Sets the main controller for this PasswordDetailsController
     public void setMainController(MainController mainController) {
         this.mainController = mainController; // Store the MainController reference
     }
 
-    /**
-     * Logs the error message and displays an alert with the error details.
-     *
-     * @param message the message to log and display
-     * @param e the exception that occurred (can be null)
-     */
+    // Logs the error message and displays an alert with the error details
     private void logAndAlert(String message, Exception e) {
         System.out.println(message); // Log the error message
         if (e != null) {

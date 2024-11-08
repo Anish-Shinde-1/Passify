@@ -11,54 +11,36 @@ public class Hashing {
     // Length of the generated hash (in bits)
     private static final int KEY_LENGTH = 512;
 
-    // Number of iterations for the hash function (PBKDF2)
+    // Number of iterations for PBKDF2 hashing function
     private static final int ITERATIONS = 15000;
 
-    /**
-     * Generates a PBKDF2 hash using HmacSHA512 with the given password and salt.
-     *
-     * @param password The plain-text password to hash
-     * @param salt     The salt value (encoded as Base64) used for hashing
-     * @return A Base64-encoded hash of the password
-     * @throws NoSuchAlgorithmException if the PBKDF2WithHmacSHA512 algorithm is not available
-     * @throws InvalidKeySpecException  if the provided key specification is invalid
-     */
+    // Generates a PBKDF2 hash using HmacSHA512 for the given password and salt
     public static String generateHash512(String password, String salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
         // Convert the password into a character array and decode the salt from Base64
         char[] passwordChars = password.toCharArray();
         byte[] saltBytes = Base64.getDecoder().decode(salt);
 
-        // Create a PBEKeySpec with the password, salt, number of iterations, and desired key length
+        // Prepare the key specification for the hashing algorithm with password, salt, iterations, and key length
         PBEKeySpec spec = new PBEKeySpec(passwordChars, saltBytes, ITERATIONS, KEY_LENGTH);
 
-        // Get a SecretKeyFactory for the PBKDF2WithHmacSHA512 algorithm
+        // Create a SecretKeyFactory for PBKDF2WithHmacSHA512 algorithm
         SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512");
 
-        // Generate the hash bytes
+        // Generate the hash byte array using the key specification
         byte[] hashBytes = keyFactory.generateSecret(spec).getEncoded();
 
-        // Encode the hash bytes to Base64 and return the result
+        // Encode the hash in Base64 and return it
         return Base64.getEncoder().encodeToString(hashBytes);
     }
 
-    /**
-     * Verifies if the entered password matches the stored hash by rehashing the entered password
-     * with the stored salt and comparing it to the stored hash.
-     *
-     * @param enteredPassword The password entered by the user (plain-text)
-     * @param storedHash      The stored password hash (Base64-encoded)
-     * @param storedSalt      The stored salt used during hash generation (Base64-encoded)
-     * @return true if the hash of the entered password matches the stored hash, false otherwise
-     * @throws NoSuchAlgorithmException if the PBKDF2WithHmacSHA512 algorithm is not available
-     * @throws InvalidKeySpecException  if the provided key specification is invalid
-     */
+    // Verifies if the entered password matches the stored hash by rehashing the entered password
     public static boolean verifyHash(String enteredPassword, String storedHash, String storedSalt)
             throws NoSuchAlgorithmException, InvalidKeySpecException {
 
-        // Generate a hash from the entered password and the stored salt
+        // Generate the hash of the entered password using the stored salt
         String hashedEnteredPassword = generateHash512(enteredPassword, storedSalt);
 
-        // Compare the generated hash with the stored hash
+        // Compare the generated hash with the stored hash to verify match
         return hashedEnteredPassword.equals(storedHash);
     }
 
